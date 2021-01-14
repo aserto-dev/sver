@@ -14,8 +14,9 @@ import (
 )
 
 var (
-	version  = "0.0.0"
-	flagNext = ""
+	version   = "0.0.0"
+	flagNext  = ""
+	gitBinary = "git"
 
 	// Based on https://semver.org/#semantic-versioning-200 but we do support the
 	// common `v` prefix in front and do not allow plus elements like `1.0.0+gold`.
@@ -73,25 +74,26 @@ func main() {
 	}
 }
 
-func git(args ...string) string {
-	err := verifyGit()
-	if err != nil {
-		fmt.Println(errors.Wrap(err, "git error").Error())
-		os.Exit(1)
-	}
-
-	cmd := exec.Command("git", args...)
+func git(args ...string) (string, error) {
+	cmd := exec.Command(gitBinary, args...)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		fmt.Println(errors.Wrapf(err, "unexpected result from git; output: \n%s\n", string(out)).Error())
-		os.Exit(1)
+		return "", errors.Wrapf(err, "unexpected result from git; output: \n%s\n", string(out))
 	}
 
-	return strings.TrimSpace(string(out))
+	return strings.TrimSpace(string(out)), nil
 }
 
 func currentVersion() (string, error) {
-	tag := git("describe", "--tags", "--abbrev=0")
+	err := verifyGit()
+	if err != nil {
+		return "", errors.Wrap(err, "git error")
+	}
+
+	tag, err := git("describe", "--tags", "--abbrev=0")
+	if err != nil {
+		return "", errors.Wrap(err, "exec error")
+	}
 
 	if !regexSupportedVersionFormat.MatchString(tag) {
 		if strings.Contains(tag, "+") {
@@ -107,9 +109,17 @@ func currentVersion() (string, error) {
 	// then it gets mutated based on a series of constraints.
 
 	//  If the tag doesn't point to HEAD, it's a pre-release.
-	if git("tag", "--points-at", "HEAD") == "" {
+	pointsAt, err := git("tag", "--points-at", "HEAD")
+	if err != nil {
+		return "", errors.Wrap(err, "exec error")
+	}
+	if pointsAt == "" {
 		// The commit timestamp should be in the format yyyymmddHHMMSS in UTC.
-		gitCommitTimestamp := git("show", "--no-patch", "--format=%ct", "HEAD")
+		gitCommitTimestamp, err := git("show", "--no-patch", "--format=%ct", "HEAD")
+		if err != nil {
+			return "", errors.Wrap(err, "exec error")
+		}
+
 		unixTime, err := strconv.ParseInt(gitCommitTimestamp, 10, 64)
 		if err != nil {
 			return "", errors.Wrap(err, "failed to parse git commit timestamp")
@@ -119,10 +129,17 @@ func currentVersion() (string, error) {
 
 		//  The number of commits since last tag that points to a commits in the
 		//  branch.
-		gitNumberCommits := git("rev-list", "--count", fmt.Sprintf("%s...HEAD", version))
+		gitNumberCommits, err := git("rev-list", "--count", fmt.Sprintf("%s...HEAD", version))
+		if err != nil {
+			return "", errors.Wrap(err, "exec error")
+		}
 
 		//  Add `g` to the short hash to match git describe.
-		gitCommitShortHash := git("rev-parse", "--short=8", "HEAD")
+		gitCommitShortHash, err := git("rev-parse", "--short=8", "HEAD")
+		if err != nil {
+			return "", errors.Wrap(err, "exec error")
+		}
+
 		gitCommitShortHash = "g" + gitCommitShortHash
 
 		//  The version gets assembled with the pre-release part.
@@ -131,7 +148,11 @@ func currentVersion() (string, error) {
 
 	// If there's a change in the source tree that didn't get committed, append
 	// `-dirty` to the version string.
-	if git("status", "--short") != "" {
+	status, err := git("status", "--short")
+	if err != nil {
+		return "", errors.Wrap(err, "exec error")
+	}
+	if status != "" {
 		version = fmt.Sprintf("%s-dirty", version)
 	}
 
@@ -151,8 +172,11 @@ func next(currentVersion, nextType string) (string, error) {
 		patch = patch + 1
 	case "minor":
 		minor = minor + 1
+		patch = 0
 	case "major":
 		major = major + 1
+		minor = 0
+		patch = 0
 	default:
 		return "", errors.Errorf("Invalid value '%s' for next version. Supported values are 'patch', 'minor' and 'major'", nextType)
 	}
@@ -161,12 +185,12 @@ func next(currentVersion, nextType string) (string, error) {
 }
 
 func verifyGit() error {
-	_, err := exec.LookPath("git")
+	_, err := exec.LookPath(gitBinary)
 	if err != nil {
 		return errors.New("git not found in your PATH; please install it")
 	}
 
-	cmd := exec.Command("git", "rev-parse", "--is-inside-work-tree")
+	cmd := exec.Command(gitBinary, "rev-parse", "--is-inside-work-tree")
 	err = cmd.Run()
 	if err != nil {
 		return errors.New("current directory is not a git working tree")
