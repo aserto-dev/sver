@@ -9,7 +9,7 @@ export GOPRIVATE=github.com/aserto-dev
 
 GIT_ON_SSH 						:= $(git config --global url."git@github.com:".insteadOf "https://github.com/")
 SSH_PRIVATE_KEY_FILE 	?= $(HOME)/.ssh/id_rsa
-SSH_PRIVATE_KEY 			:= $(file < $(SSH_PRIVATE_KEY_FILE))
+SSH_PRIVATE_KEY 			?= $(file < $(SSH_PRIVATE_KEY_FILE))
 
 ROOT_DIR   ?= $(shell git rev-parse --show-toplevel)
 BIN_DIR    := $(ROOT_DIR)/bin
