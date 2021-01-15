@@ -14,9 +14,11 @@ import (
 )
 
 var (
-	version   = "0.0.0"
-	flagNext  = ""
-	gitBinary = "git"
+	version       = "0.0.0"
+	flagNext      = ""
+	flagMajorOnly = false
+	flagMinorOnly = false
+	gitBinary     = "git"
 
 	// Based on https://semver.org/#semantic-versioning-200 but we do support the
 	// common `v` prefix in front and do not allow plus elements like `1.0.0+gold`.
@@ -43,6 +45,32 @@ var rootCmd = &cobra.Command{
 			}
 		}
 
+		if flagMinorOnly && flagMajorOnly {
+			return errors.New("can't use --minor and --major in the same run")
+		}
+
+		if flagMinorOnly {
+			major, minor, _, tail, err := parts(version)
+			if err != nil {
+				return errors.Wrap(err, "failed to get version parts")
+			}
+			if tail != "" {
+				return errors.Errorf("'%s' is a development version - can't use the --minor flag", version)
+			}
+			version = fmt.Sprintf("%d.%d", major, minor)
+		}
+
+		if flagMajorOnly {
+			major, _, _, tail, err := parts(version)
+			if err != nil {
+				return errors.Wrap(err, "failed to get version parts")
+			}
+			if tail != "" {
+				return errors.Errorf("'%s' is a development version - can't use the --major flag", version)
+			}
+			version = fmt.Sprintf("%d", major)
+		}
+
 		fmt.Println(version)
 
 		return nil
@@ -63,6 +91,8 @@ var versionCmd = &cobra.Command{
 
 func main() {
 	rootCmd.Flags().StringVarP(&flagNext, "next", "n", "", "Prints the next version. Possible values are 'major', 'minor' or 'patch'.")
+	rootCmd.Flags().BoolVarP(&flagMajorOnly, "major-only", "m", false, "Only prints the major version. Fails if version is a development version.")
+	rootCmd.Flags().BoolVarP(&flagMinorOnly, "minor-only", "r", false, "Only prints the major and minor versions. Fails if version is a development version.")
 
 	rootCmd.AddCommand(
 		versionCmd,
