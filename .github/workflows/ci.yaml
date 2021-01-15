@@ -1,0 +1,107 @@
+name: ci
+
+on:
+  push:
+    # Publish `master` as Docker `latest` image.
+    branches:
+      - master
+      - v*
+    # Publish `v1.2.3` tags as releases.
+    tags:
+      - v*
+  # Run tests for any PRs
+  pull_request:
+
+env:
+  IMAGE_NAME: calc-version
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.15.6'
+      - name: Install Tools
+        run: |
+          make deps
+      - name: Lint
+        run: |
+          make lint
+      # - name: Setup tmate session for debugging
+      #   uses: mxschmitt/action-tmate@v3
+      - name: Test
+        run: |
+          make test
+  push:
+    needs: test
+    runs-on: ubuntu-latest
+    # when on a branch only push if the branch is master
+    # always push when ref is a tag
+    if: github.event_name == 'push' && ( github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') )
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build Image
+        run: |
+          make docker-image
+      - name: Read configuration
+        uses: hashicorp/vault-action@v2.1.0
+        id: vault
+        with:
+          url: https://vault.otresa.com/
+          token: ${{ secrets.VAULT_TOKEN }}
+          secrets: |
+            kv/data/github  "USERNAME"            | DOCKER_USERNAME;
+            kv/data/github  "DOCKER_PUSH_TOKEN"   | DOCKER_PASSWORD;
+      - name: Login to GitHub Packages Docker Registry
+        uses: docker/login-action@v1
+        with:
+          registry: https://ghcr.io
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}
+      - name: Push image to GitHub Container Registry
+        run: |
+          BUILT_IMAGE_WITH_TAG=$(docker images -f LABEL=org.opencontainers.image.source=https://github.com/aserto-dev/aserto-one -q --format "{{.Repository}}:{{.Tag}}")
+          PUBLISH_IMAGE=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+          calc-versions tags ${{ github.repository_owner }}/$IMAGE_NAME --server ghcr.io --user "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD" \
+            xargs -I{} bash -c "docker tag $BUILT_IMAGE_WITH_TAG $PUBLISH_IMAGE:{} && docker push $PUBLISH_IMAGE:{}"
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    # when on a branch only push if the branch is master
+    # always push when ref is a tag
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.15.6'
+      - name: Build
+        run: |
+          make build
+          cd .bin/linux-amd64/
+          tar -czf calc-version-linux-arm64.tar.gz *
+      - name: Create Release
+        # Only release on tag
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: .bin/linux-amd64/calc-version-linux-arm64.tar.gz
+          asset_name: calc-version

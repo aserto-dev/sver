@@ -6,7 +6,10 @@ SHELL 	   := $(shell which bash)
 # this works in tandem with the following git configuration, defined below
 # git config --global url."git@github.com:".insteadOf "https://github.com/"
 export GOPRIVATE=github.com/aserto-dev
-GIT_ON_SSH := $(git config --global url."git@github.com:".insteadOf "https://github.com/")
+
+GIT_ON_SSH 						:= $(git config --global url."git@github.com:".insteadOf "https://github.com/")
+SSH_PRIVATE_KEY_FILE 	?= $(HOME)/.ssh/id_rsa
+SSH_PRIVATE_KEY 			:= $(file < $(SSH_PRIVATE_KEY_FILE))
 
 ROOT_DIR   ?= $(shell git rev-parse --show-toplevel)
 BIN_DIR    := $(ROOT_DIR)/bin
@@ -50,3 +53,11 @@ build: $(BIN_DIR)
 	do	\
 		$(MAKE) dobuild B=$${b} P=${GOOS} T=${BIN_DIR};	\
 	done
+
+.PHONY: test
+test:
+	@go test -count 1 -cover
+
+.PHONY: docker-image
+docker-image:
+	@docker build . --build-arg VERSION --build-arg SSH_PRIVATE_KEY --build-arg COMMIT -t aserto/calc-version:$(VERSION)
