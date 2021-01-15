@@ -46,6 +46,8 @@ func calculateTagsForVersion(version string, tags []string) ([]string, error) {
 
 		vs = append(vs, v)
 	}
+
+	result := []string{version}
 	sort.Sort(semver.Collection(vs))
 
 	parsedVersion, err := semver.NewVersion(version)
@@ -53,17 +55,37 @@ func calculateTagsForVersion(version string, tags []string) ([]string, error) {
 		return nil, errors.Wrap(err, "failed to parse version")
 	}
 
-	result := []string{
-		version,
-		fmt.Sprintf("%d.%d", major, minor),
-		fmt.Sprintf("%d", major),
+	doMajor := true
+	doMinor := true
+	for idx := range vs {
+		if parsedVersion.GreaterThan(vs[idx]) {
+			continue
+		}
+
+		if vs[idx].Major() == parsedVersion.Major() {
+			doMajor = false
+		}
+
+		if vs[idx].Minor() == parsedVersion.Minor() {
+			doMinor = false
+		}
+
+		break
+	}
+
+	if doMinor {
+		result = append(result, fmt.Sprintf("%d.%d", major, minor))
+	}
+
+	if doMajor {
+		result = append(result, fmt.Sprintf("%d", major))
 	}
 
 	var latestExistingTag *semver.Version
 	if len(vs) > 0 {
 		latestExistingTag = vs[len(vs)-1]
 	}
-	if latestExistingTag == nil || parsedVersion.Compare(latestExistingTag) > 0 {
+	if latestExistingTag == nil || parsedVersion.GreaterThan(latestExistingTag) {
 		result = append(result, "latest")
 	}
 
