@@ -19,6 +19,23 @@ func imageTags(serverURL, username, password, image string) ([]string, error) {
 		return nil, errors.Wrap(err, "failed to connect to registry")
 	}
 
+	repos, err := hub.Repositories()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to list repositories")
+	}
+
+	found := false
+	for _, repo := range repos {
+		if repo == image {
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		return []string{}, nil
+	}
+
 	tags, err := hub.Tags(image)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get image tags")
