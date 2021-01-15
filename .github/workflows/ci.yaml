@@ -81,7 +81,7 @@ jobs:
           password: ${{ env.DOCKER_PASSWORD }}
       - name: Push image to GitHub Container Registry
         run: |
-          BUILT_IMAGE_WITH_TAG=$(docker images -f LABEL=org.opencontainers.image.source=https://github.com/aserto-dev/aserto-one -q --format "{{.Repository}}:{{.Tag}}")
+          BUILT_IMAGE_WITH_TAG=$(docker images -f LABEL=org.opencontainers.image.source=https://github.com/aserto-dev/calc-version -q --format "{{.Repository}}:{{.Tag}}")
           PUBLISH_IMAGE=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
           calc-versions tags ${{ github.repository_owner }}/$IMAGE_NAME --server ghcr.io --user "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD" \
             xargs -I{} bash -c "docker tag $BUILT_IMAGE_WITH_TAG $PUBLISH_IMAGE:{} && docker push $PUBLISH_IMAGE:{}"
