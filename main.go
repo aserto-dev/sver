@@ -10,7 +10,6 @@ import (
 )
 
 var (
-	version       = "0.0.0"
 	flagNext      = ""
 	flagMajorOnly = false
 	flagMinorOnly = false
@@ -84,7 +83,7 @@ var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print version and exit",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("calc-version %s\n", version)
+		fmt.Printf("calc-version %s\n", GetInfo().String())
 	},
 	SilenceErrors: true,
 	SilenceUsage:  true,

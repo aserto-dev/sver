@@ -18,7 +18,8 @@ var _ = Describe("calc-version", func() {
 	BeforeEach(func() {
 		dir, err = ioutil.TempDir("", "calc-version")
 		Expect(err).ToNot(HaveOccurred())
-		os.Chdir(dir)
+		err = os.Chdir(dir)
+		Expect(err).ToNot(HaveOccurred())
 	})
 
 	AfterEach(func() {
@@ -271,12 +272,6 @@ func createCommit(fileName string) {
 	Expect(err).ToNot(HaveOccurred())
 
 	_, err = git("commit", "--no-gpg-sign", "--message", "Dummy", fileName)
-	Expect(err).ToNot(HaveOccurred())
-}
-
-func createCommitAndTag(tag string) {
-	createCommit(tag)
-	_, err := git("tag", tag)
 	Expect(err).ToNot(HaveOccurred())
 }
 
