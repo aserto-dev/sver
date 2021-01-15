@@ -62,6 +62,8 @@ jobs:
           secrets: |
             kv/data/github  "SSH_PRIVATE_KEY"     | SSH_PRIVATE_KEY;
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Build Image
         run: |
           make docker-image
@@ -92,6 +94,8 @@ jobs:
           secrets: |
             kv/data/github  "SSH_PRIVATE_KEY"     | SSH_PRIVATE_KEY;
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
