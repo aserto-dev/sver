@@ -1,6 +1,8 @@
 name: ci
 
 on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
   push:
     # Publish `master` as Docker `latest` image.
     branches:
@@ -67,7 +69,6 @@ jobs:
           PUBLISH_IMAGE=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
           calc-versions tags ${{ github.repository_owner }}/$IMAGE_NAME --server ghcr.io --user "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD" \
             xargs -I{} bash -c "docker tag $BUILT_IMAGE_WITH_TAG $PUBLISH_IMAGE:{} && docker push $PUBLISH_IMAGE:{}"
-
   release:
     needs: test
     runs-on: ubuntu-latest
