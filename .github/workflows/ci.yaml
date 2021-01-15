@@ -109,7 +109,7 @@ jobs:
       - name: Build
         run: |
           make deps build
-          cd .bin/linux-amd64/
+          cd ./bin/linux-amd64/
           tar -czf calc-version-linux-arm64.tar.gz *
       - name: Create Release
         id: create_release
