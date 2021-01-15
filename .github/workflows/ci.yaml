@@ -4,9 +4,8 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   push:
-    # Publish `master` as Docker `latest` image.
     branches:
-      - master
+      - main
       - v*
     # Publish `v1.2.3` tags as releases.
     tags:
@@ -40,7 +39,7 @@ jobs:
   push:
     needs: test
     runs-on: ubuntu-latest
-    # when on a branch only push if the branch is master
+    # when on a branch only push if the branch is main
     # always push when ref is a tag
     if: github.event_name == 'push' && ( github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') )
     steps:
@@ -72,8 +71,7 @@ jobs:
   release:
     needs: test
     runs-on: ubuntu-latest
-    # when on a branch only push if the branch is master
-    # always push when ref is a tag
+    # Only release when ref is a tag
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/checkout@v2
@@ -87,7 +85,6 @@ jobs:
           cd .bin/linux-amd64/
           tar -czf calc-version-linux-arm64.tar.gz *
       - name: Create Release
-        # Only release on tag
         id: create_release
         uses: actions/create-release@v1
         env:
