@@ -43,6 +43,8 @@ jobs:
       #   uses: mxschmitt/action-tmate@v3
       - name: Test
         run: |
+          git config --global user.email "github-bot@aserto.com"
+          git config --global user.name "Aserto Bot"
           make test
   push:
     needs: test
