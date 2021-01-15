@@ -84,7 +84,7 @@ jobs:
           BUILT_IMAGE_WITH_TAG=$(docker images -f LABEL=org.opencontainers.image.source=https://github.com/aserto-dev/calc-version -q --format "{{.Repository}}:{{.Tag}}")
           PUBLISH_IMAGE=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
           calc-version tags ${{ github.repository_owner }}/$IMAGE_NAME --server https://ghcr.io --user "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD" | \
-            xargs -0 -I{} bash -c "docker tag $BUILT_IMAGE_WITH_TAG $PUBLISH_IMAGE:{} && docker push $PUBLISH_IMAGE:{}"
+            xargs -I{} bash -c "docker tag '$BUILT_IMAGE_WITH_TAG' '$PUBLISH_IMAGE:{}' && docker push '$PUBLISH_IMAGE:{}'"
   release:
     needs: test
     runs-on: ubuntu-latest
