@@ -31,6 +31,9 @@ $(LINTER):
 	@echo -e "$(ATTN_COLOR)==> get $@  $(NO_COLOR)"
 	@curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s $(LINTVERSION)
 
+$(BIN_DIR):
+	@mkdir -p $(BIN_DIR)
+
 .PHONY: lint
 lint: $(LINTER)
 	$(LINTER) run
