@@ -6,7 +6,7 @@ RUN apk add --no-cache bash build-base git tree curl protobuf openssh
 WORKDIR /src
 
 # make sure git ssh is properly setup so we can access private repos
-RUN mkdir -p $HOME/.ssh && umask 0077 && echo "${SSH_PRIVATE_KEY}" > $HOME/.ssh/id_rsa \
+RUN mkdir -p $HOME/.ssh && umask 0077 && echo -e "${SSH_PRIVATE_KEY}" > $HOME/.ssh/id_rsa \
 	&& git config --global url."git@github.com:".insteadOf https://github.com/ \
 	&& ssh-keyscan github.com >> $HOME/.ssh/known_hosts
 
