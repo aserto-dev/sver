@@ -20,6 +20,10 @@ COMMIT     ?= `git rev-parse --short HEAD 2>/dev/null`
 VERSION    ?= v`calc-version`
 DATE       ?= `date "+%FT%T%z"`
 
+export VERSION
+export SSH_PRIVATE_KEY
+export COMMIT
+
 LDBASE     := main
 DEV_LDFLAGS:= -ldflags "-X $(LDBASE).ver=${VERSION} -X $(LDBASE).date=${DATE} -X $(LDBASE).commit=${COMMIT}"
 GOARCH     ?= amd64
