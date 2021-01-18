@@ -31,7 +31,7 @@ func GetInfo() Info {
 	}
 
 	if commit == "" {
-		commit = "????????"
+		commit = "undefined"
 	}
 
 	return Info{
