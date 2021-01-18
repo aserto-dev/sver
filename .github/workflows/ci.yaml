@@ -16,6 +16,7 @@ on:
 env:
   IMAGE_NAME: calc-version
   VAULT_ADDR: https://vault.otresa.com/
+  PRE_RELEASE: ${{ github.ref == 'refs/heads/main' && 'main' || '' }}
 
 jobs:
   test:
@@ -45,16 +46,20 @@ jobs:
           go-version: '1.15.6'
       - name: Install Tools
         run: |
+          mkdir -p $HOME/.ssh
+          umask 0077 && echo -e "${SSH_PRIVATE_KEY}" > $HOME/.ssh/id_rsa
+          ssh-keyscan github.com >> $HOME/.ssh/known_hosts
+
+          git config --global url."git@github.com:".insteadOf https://github.com/
+          git config --global user.email "github-bot@aserto.com"
+          git config --global user.name "Aserto Bot"
+
           make deps
       - name: Lint
         run: |
           make lint
-      # - name: Setup tmate session for debugging
-      #   uses: mxschmitt/action-tmate@v3
       - name: Test
         run: |
-          git config --global user.email "github-bot@aserto.com"
-          git config --global user.name "Aserto Bot"
           make test
   push:
     needs: test
@@ -91,6 +96,14 @@ jobs:
           go-version: '1.15.6'
       - name: Build Image
         run: |
+          mkdir -p $HOME/.ssh
+          umask 0077 && echo -e "${SSH_PRIVATE_KEY}" > $HOME/.ssh/id_rsa
+          ssh-keyscan github.com >> $HOME/.ssh/known_hosts
+
+          git config --global url."git@github.com:".insteadOf https://github.com/
+          git config --global user.email "github-bot@aserto.com"
+          git config --global user.name "Aserto Bot"
+
           make deps docker-image
       - name: Login to GitHub Packages Docker Registry
         uses: docker/login-action@v1
@@ -98,11 +111,19 @@ jobs:
           registry: https://ghcr.io
           username: ${{ env.DOCKER_USERNAME }}
           password: ${{ env.DOCKER_PASSWORD }}
+      # - name: Setup tmate session for debugging
+      #   uses: mxschmitt/action-tmate@v3
       - name: Push image to GitHub Container Registry
         run: |
           BUILT_IMAGE_WITH_TAG=$(docker images -f LABEL=org.opencontainers.image.source=https://github.com/aserto-dev/calc-version -q --format "{{.Repository}}:{{.Tag}}")
+
           PUBLISH_IMAGE=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
-          calc-version tags ${{ github.repository_owner }}/$IMAGE_NAME --server https://ghcr.io --user "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD" | \
+
+          calc-version tags \
+            ${{ github.repository_owner }}/$IMAGE_NAME \
+            --server https://ghcr.io \
+            --user "$DOCKER_USERNAME" \
+            --password "$DOCKER_PASSWORD" | \
             xargs -I{} bash -c "docker tag '$BUILT_IMAGE_WITH_TAG' '$PUBLISH_IMAGE:{}' && docker push '$PUBLISH_IMAGE:{}'"
   release:
     needs: test

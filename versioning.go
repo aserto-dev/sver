@@ -2,11 +2,25 @@ package main
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/pkg/errors"
+)
+
+var (
+	gitBinary = "git"
+
+	// Based on https://semver.org/#semantic-versioning-200 but we do support the
+	// common `v` prefix in front and do not allow plus elements like `1.0.0+gold`.
+	regexSupportedVersionFormat = regexp.MustCompile(`^v?(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?$`)
+
+	regexMajor = regexp.MustCompile(`^([0-9]+)\.[0-9]+\.[0-9]+.*`)
+	regexMinor = regexp.MustCompile(`^[0-9]+\.([0-9]+)\.[0-9]+.*`)
+	regexPatch = regexp.MustCompile(`^[0-9]+\.[0-9]+\.([0-9]+).*`)
+	regexTail  = regexp.MustCompile(`^[0-9]+\.[0-9]+\.[0-9]+(.*)`)
 )
 
 func currentVersion() (string, error) {
@@ -84,6 +98,10 @@ func currentVersion() (string, error) {
 	version = strings.TrimPrefix(version, "v")
 
 	return version, nil
+}
+
+func preRelease(currentVersion, identifier string) string {
+	return fmt.Sprintf("%s-%s", currentVersion, identifier)
 }
 
 func next(currentVersion, nextType string) (string, error) {

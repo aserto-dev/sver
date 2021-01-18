@@ -3,31 +3,20 @@ package main
 import (
 	"fmt"
 	"os"
-	"regexp"
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
 var (
-	flagNext      = ""
-	flagMajorOnly = false
-	flagMinorOnly = false
+	flagNext       = ""
+	flagMajorOnly  = false
+	flagMinorOnly  = false
+	flagPreRelease = ""
 
 	flagTagsServerURL = ""
 	flagTagsUsername  = ""
 	flagTagsPassword  = ""
-
-	gitBinary = "git"
-
-	// Based on https://semver.org/#semantic-versioning-200 but we do support the
-	// common `v` prefix in front and do not allow plus elements like `1.0.0+gold`.
-	regexSupportedVersionFormat = regexp.MustCompile(`^v?(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?$`)
-
-	regexMajor = regexp.MustCompile(`^([0-9]+)\.[0-9]+\.[0-9]+.*`)
-	regexMinor = regexp.MustCompile(`^[0-9]+\.([0-9]+)\.[0-9]+.*`)
-	regexPatch = regexp.MustCompile(`^[0-9]+\.[0-9]+\.([0-9]+).*`)
-	regexTail  = regexp.MustCompile(`^[0-9]+\.[0-9]+\.[0-9]+(.*)`)
 )
 
 var rootCmd = &cobra.Command{
@@ -36,6 +25,10 @@ var rootCmd = &cobra.Command{
 		version, err := currentVersion()
 		if err != nil {
 			return err
+		}
+
+		if flagPreRelease != "" {
+			version = preRelease(version, flagPreRelease)
 		}
 
 		if flagNext != "" {
@@ -102,6 +95,10 @@ it's the latest one, it returns the appropriate tags to be pushed.`,
 			return err
 		}
 
+		if flagPreRelease != "" {
+			version = preRelease(version, flagPreRelease)
+		}
+
 		existingTags, err := imageTags(flagTagsServerURL, flagTagsUsername, flagTagsPassword, args[0])
 		if err != nil {
 			return err
@@ -124,12 +121,14 @@ it's the latest one, it returns the appropriate tags to be pushed.`,
 
 func main() {
 	rootCmd.Flags().StringVarP(&flagNext, "next", "n", "", "Prints the next version. Possible values are 'major', 'minor' or 'patch'.")
+	rootCmd.Flags().StringVarP(&flagPreRelease, "pre-release", "", os.ExpandEnv("${PRE_RELEASE}"), `Adds a pre release identifier to the version. (env "PRE_RELEASE")`)
 	rootCmd.Flags().BoolVarP(&flagMajorOnly, "major-only", "m", false, "Only prints the major version. Fails if version is a development version.")
 	rootCmd.Flags().BoolVarP(&flagMinorOnly, "minor-only", "r", false, "Only prints the major and minor versions. Fails if version is a development version.")
 
 	tagsCmd.Flags().StringVarP(&flagTagsServerURL, "server", "s", "https://registry-1.docker.io/", "Registry server to connect to.")
 	tagsCmd.Flags().StringVarP(&flagTagsUsername, "user", "u", "", "Username for the registry.")
 	tagsCmd.Flags().StringVarP(&flagTagsPassword, "password", "p", "", "Password for the registry.")
+	tagsCmd.Flags().StringVarP(&flagPreRelease, "pre-release", "", os.ExpandEnv("${PRE_RELEASE}"), `Adds a pre release identifier to the version. (env "PRE_RELEASE")`)
 
 	rootCmd.AddCommand(
 		versionCmd,

@@ -1,7 +1,5 @@
 FROM golang:1.15-alpine AS build
 ARG SSH_PRIVATE_KEY
-ARG VERSION
-ARG COMMIT
 RUN apk add --no-cache bash build-base git tree curl protobuf openssh
 WORKDIR /src
 
@@ -22,10 +20,14 @@ COPY go.mod go.sum Makefile ./
 RUN go mod download
 
 # generate & build
+ARG VERSION
+ARG COMMIT
 COPY . .
 RUN make deps build
 
 FROM alpine
+ARG VERSION
+ARG COMMIT
 LABEL org.opencontainers.image.version=$VERSION
 LABEL org.opencontainers.image.source=https://github.com/aserto-dev/calc-version
 LABEL org.opencontainers.image.title="Version Calculator"

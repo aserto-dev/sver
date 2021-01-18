@@ -16,9 +16,9 @@ BIN_DIR    := $(ROOT_DIR)/bin
 SRC_DIR    := $(ROOT_DIR)/
 BINARIES   := calc-version
 
-COMMIT     ?= `git rev-parse --short HEAD 2>/dev/null`
-VERSION    ?= v`calc-version`
-DATE       ?= `date "+%FT%T%z"`
+VERSION    ?= v$(shell calc-version 2>/dev/null)
+COMMIT     ?= $(shell git rev-parse --short HEAD 2>/dev/null)
+DATE       ?= $(shell date "+%FT%T%z")
 
 export VERSION
 export SSH_PRIVATE_KEY
@@ -44,7 +44,7 @@ lint: $(LINTER)
 
 .PHONY: deps
 deps:
-	@go install -i github.com/aserto-dev/calc-version
+	@go install .
 
 .PHONY: dobuild
 dobuild:

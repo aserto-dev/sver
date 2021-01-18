@@ -224,7 +224,37 @@ var _ = Describe("calc-version", func() {
 		})
 	})
 
-	Describe(".next", func() {
+	Describe("pre-release", func() {
+		BeforeEach(func() {
+			createGitDirWithTag("v10.200.5")
+		})
+
+		Context("when pre-release is used", func() {
+			It("calculates the next patch version", func() {
+				version, err := currentVersion()
+				Expect(err).ToNot(HaveOccurred())
+				version = preRelease(version, "nightly")
+
+				Expect(version).To(Equal(`10.200.5-nightly`))
+			})
+		})
+
+		Context("when pre-release is used and worktree is dirty", func() {
+			BeforeEach(func() {
+				createUncomittedChanges("tracked_file")
+			})
+
+			It("calculates the next patch version", func() {
+				version, err := currentVersion()
+				Expect(err).ToNot(HaveOccurred())
+				version = preRelease(version, "nightly")
+
+				Expect(version).To(Equal(`10.200.5-dirty-nightly`))
+			})
+		})
+	})
+
+	Describe("next", func() {
 		BeforeEach(func() {
 			createGitDirWithTag("v10.200.5")
 		})
