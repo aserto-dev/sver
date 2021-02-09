@@ -159,7 +159,7 @@ jobs:
         run: |
           make deps build
           cd ./bin/linux-amd64/
-          tar -czf calc-version-linux-arm64.tar.gz *
+          tar -czf calc-version-linux-amd64.tar.gz *
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -177,6 +177,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing its ID to get its outputs object, which include an `upload_url`.
-          asset_path: ./bin/linux-amd64/calc-version-linux-arm64.tar.gz
-          asset_name: calc-version-linux-arm64.tar.gz
+          asset_path: ./bin/linux-amd64/calc-version-linux-amd64.tar.gz
+          asset_name: calc-version-linux-amd64.tar.gz
           asset_content_type: application/gnutar
