@@ -34,7 +34,7 @@ LABEL org.opencontainers.image.title="Version Calculator"
 LABEL org.opencontainers.image.revision=$COMMIT
 LABEL org.opencontainers.image.url=https://aserto.com
 
-RUN apk add --no-cache bash
+RUN apk add --no-cache bash git openssh
 WORKDIR /app
 COPY --from=build /src/bin/linux-amd64/calc-version /app/
 
