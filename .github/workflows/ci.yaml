@@ -133,7 +133,7 @@ jobs:
         uses: hashicorp/vault-action@v2.1.0
         id: vault
         with:
-          url: https://vault.otresa.com/
+          url: https://vault.eng.aserto.com/
           token: ${{ secrets.VAULT_TOKEN }}
           secrets: |
             kv/data/github  "SSH_PRIVATE_KEY"     | SSH_PRIVATE_KEY;

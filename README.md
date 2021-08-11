@@ -19,7 +19,3 @@ For example: 1.2.0-20201027184820.3186.g4fc2e9e5-dirty.
 This script can also calculate the next semantic version based on the current version. To do so, use the --next flag. Possible values are major, minor or patch.
 
 -When major is used, the major part of the current semver is bumped and the minor and patch parts are reset to 0. -When minor is used, the minor part of the current semver is bumped and the patch part is reset to 0. -When patch is used, the patch part of the current semver is bumped.
-
-Testing
-
-

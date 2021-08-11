@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 
 	"github.com/pkg/errors"
@@ -99,7 +100,17 @@ it's the latest one, it returns the appropriate tags to be pushed.`,
 			version = preRelease(version, flagPreRelease)
 		}
 
-		existingTags, err := imageTags(flagTagsServerURL, flagTagsUsername, flagTagsPassword, args[0])
+		serverURL, err := url.Parse(flagTagsServerURL)
+		if err != nil {
+			return err
+		}
+
+		host := flagTagsServerURL
+		if serverURL.Host != "" {
+			host = serverURL.Host
+		}
+
+		existingTags, err := imageTags(host+"/"+args[0], flagTagsUsername, flagTagsPassword)
 		if err != nil {
 			return err
 		}

@@ -2,26 +2,28 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"log"
 	"sort"
 
 	"github.com/Masterminds/semver"
-	"github.com/heroku/docker-registry-client/registry"
 	"github.com/pkg/errors"
+
+	"github.com/google/go-containerregistry/pkg/authn"
+	"github.com/google/go-containerregistry/pkg/name"
+	"github.com/google/go-containerregistry/pkg/v1/remote"
 )
 
-func imageTags(serverURL, username, password, image string) ([]string, error) {
-	log.SetOutput(ioutil.Discard)
-
-	hub, err := registry.New(serverURL, username, password)
+func imageTags(repoName, username, password string) ([]string, error) {
+	repo, err := name.NewRepository(repoName)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to connect to registry")
+		return nil, errors.Wrapf(err, "invalid repo name [%s]", repoName)
 	}
 
-	tags, err := hub.Tags(image)
+	tags, err := remote.List(repo, remote.WithAuth(&authn.Basic{
+		Username: username,
+		Password: password,
+	}))
 	if err != nil {
-		return []string{}, nil
+		return nil, errors.Wrap(err, "failed to list tags from registry")
 	}
 
 	return tags, nil
