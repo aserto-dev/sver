@@ -21,7 +21,7 @@ var (
 )
 
 var rootCmd = &cobra.Command{
-	Use: "calc-version [flags]",
+	Use: "sver [flags]",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		version, err := currentVersion()
 		if err != nil {
@@ -77,7 +77,7 @@ var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print version and exit",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("calc-version %s\n", GetInfo().String())
+		fmt.Printf("sver %s\n", GetInfo().String())
 	},
 	SilenceErrors: true,
 	SilenceUsage:  true,

@@ -14,9 +14,9 @@ SSH_PRIVATE_KEY 			?= $(file < $(SSH_PRIVATE_KEY_FILE))
 ROOT_DIR   ?= $(shell git rev-parse --show-toplevel)
 BIN_DIR    := $(ROOT_DIR)/bin
 SRC_DIR    := $(ROOT_DIR)/
-BINARIES   := calc-version
+BINARIES   := sver
 
-VERSION    ?= v$(shell calc-version 2>/dev/null)
+VERSION    ?= v$(shell sver 2>/dev/null)
 COMMIT     ?= $(shell git rev-parse --short HEAD 2>/dev/null)
 DATE       ?= $(shell date "+%FT%T%z")
 
@@ -67,4 +67,4 @@ test:
 
 .PHONY: docker-image
 docker-image:
-	@docker build . --build-arg VERSION --build-arg SSH_PRIVATE_KEY --build-arg COMMIT -t aserto/calc-version:$(VERSION)
+	@docker build . --build-arg VERSION --build-arg SSH_PRIVATE_KEY --build-arg COMMIT -t aserto/sver:$(VERSION)

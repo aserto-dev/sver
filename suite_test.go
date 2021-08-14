@@ -9,5 +9,5 @@ import (
 
 func TestCalcVersion(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "calc-version suite")
+	RunSpecs(t, "sver suite")
 }

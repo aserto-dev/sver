@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("calc-version", func() {
+var _ = Describe("sver", func() {
 
 	var (
 		dir string
@@ -16,15 +16,15 @@ var _ = Describe("calc-version", func() {
 	)
 
 	BeforeEach(func() {
-		dir, err = ioutil.TempDir("", "calc-version")
+		dir, err = ioutil.TempDir("", "sver")
 		Expect(err).ToNot(HaveOccurred())
 		err = os.Chdir(dir)
 		Expect(err).ToNot(HaveOccurred())
 	})
 
 	AfterEach(func() {
-		// err := os.RemoveAll(dir)
-		// Expect(err).ToNot(HaveOccurred())
+		err := os.RemoveAll(dir)
+		Expect(err).ToNot(HaveOccurred())
 	})
 
 	Describe(".current_version", func() {

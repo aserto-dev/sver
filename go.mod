@@ -1,4 +1,4 @@
-module github.com/aserto-dev/calc-version
+module github.com/aserto-dev/sver
 
 go 1.14
 
