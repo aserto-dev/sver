@@ -1,4 +1,8 @@
+.DS_Store
+cover.out
 /sver
 /.vscode/
 /bin/
 /.ext
+=======
+/dist/
