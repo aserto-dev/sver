@@ -7,7 +7,12 @@ import (
 	"testing"
 )
 
+var (
+	ginkgoT *testing.T
+)
+
 func TestCalcVersion(t *testing.T) {
 	RegisterFailHandler(Fail)
+	ginkgoT = t
 	RunSpecs(t, "sver suite")
 }

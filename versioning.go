@@ -29,9 +29,15 @@ func currentVersion() (string, error) {
 		return "", errors.Wrap(err, "git error")
 	}
 
+	hasTag := true
 	tag, err := git("describe", "--tags", "--abbrev=0")
 	if err != nil {
-		return "", errors.Wrap(err, "exec error")
+		if !strings.Contains(err.Error(), "cannot describe anything") {
+			return "", errors.Wrap(err, "exec error")
+		} else {
+			tag = "0.0.0"
+			hasTag = false
+		}
 	}
 
 	if !regexSupportedVersionFormat.MatchString(tag) {
@@ -68,7 +74,10 @@ func currentVersion() (string, error) {
 
 		//  The number of commits since last tag that points to a commits in the
 		//  branch.
-		gitNumberCommits, err := git("rev-list", "--count", fmt.Sprintf("%s...HEAD", version))
+		gitNumberCommits := "0"
+		if hasTag {
+			gitNumberCommits, err = git("rev-list", "--count", fmt.Sprintf("%s...HEAD", version))
+		}
 		if err != nil {
 			return "", errors.Wrap(err, "exec error")
 		}

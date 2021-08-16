@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"sort"
 
 	"github.com/Masterminds/semver"
@@ -10,6 +11,7 @@ import (
 	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/name"
 	"github.com/google/go-containerregistry/pkg/v1/remote"
+	"github.com/google/go-containerregistry/pkg/v1/remote/transport"
 )
 
 func imageTags(repoName, username, password string) ([]string, error) {
@@ -23,6 +25,15 @@ func imageTags(repoName, username, password string) ([]string, error) {
 		Password: password,
 	}))
 	if err != nil {
+		if tErr, ok := err.(*transport.Error); ok {
+			switch tErr.StatusCode {
+			case http.StatusUnauthorized:
+				return nil, errors.Wrap(err, "authentication to docker registry failed")
+			case http.StatusNotFound:
+				return []string{}, nil
+			}
+		}
+
 		return nil, errors.Wrap(err, "failed to list tags from registry")
 	}
 

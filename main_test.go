@@ -71,12 +71,15 @@ var _ = Describe("sver", func() {
 		})
 
 		Context("when no git tag exists", func() {
-			It("raises with the same error message", func() {
+			It("returns an initial version", func() {
 				_, err := git("init")
+				createCommit("foo")
+
 				Expect(err).ToNot(HaveOccurred())
 
-				_, err = currentVersion()
-				Expect(err).To(HaveOccurred())
+				version, err := currentVersion()
+				Expect(err).ToNot(HaveOccurred())
+				Expect(version).To(MatchRegexp(`^0\.0\.0-[0-9]{14}\.0\.g[0-9a-fA-F]{8}$`))
 			})
 		})
 
