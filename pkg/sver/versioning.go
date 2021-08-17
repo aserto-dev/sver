@@ -1,4 +1,4 @@
-package main
+package sver
 
 import (
 	"fmt"
@@ -17,13 +17,13 @@ var (
 	// common `v` prefix in front and do not allow plus elements like `1.0.0+gold`.
 	regexSupportedVersionFormat = regexp.MustCompile(`^v?(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?$`)
 
-	regexMajor = regexp.MustCompile(`^([0-9]+)\.[0-9]+\.[0-9]+.*`)
-	regexMinor = regexp.MustCompile(`^[0-9]+\.([0-9]+)\.[0-9]+.*`)
-	regexPatch = regexp.MustCompile(`^[0-9]+\.[0-9]+\.([0-9]+).*`)
-	regexTail  = regexp.MustCompile(`^[0-9]+\.[0-9]+\.[0-9]+(.*)`)
+	regexMajor = regexp.MustCompile(`^(\d+)\.\d+\.\d+.*`)
+	regexMinor = regexp.MustCompile(`^\d+\.(\d+)\.\d+.*`)
+	regexPatch = regexp.MustCompile(`^\d+\.\d+\.(\d+).*`)
+	regexTail  = regexp.MustCompile(`^\d+\.\d+\.\d+(.*)`)
 )
 
-func currentVersion() (string, error) {
+func CurrentVersion() (string, error) {
 	err := verifyGit()
 	if err != nil {
 		return "", errors.Wrap(err, "git error")
@@ -96,11 +96,11 @@ func currentVersion() (string, error) {
 
 	// If there's a change in the source tree that didn't get committed, append
 	// `-dirty` to the version string.
-	status, err := git("status", "--short")
+	dirty, err := isDirty()
 	if err != nil {
-		return "", errors.Wrap(err, "exec error")
+		return "", err
 	}
-	if status != "" {
+	if dirty {
 		version = fmt.Sprintf("%s-dirty", version)
 	}
 
@@ -109,34 +109,57 @@ func currentVersion() (string, error) {
 	return version, nil
 }
 
-func preRelease(currentVersion, identifier string) string {
+func isDirty() (bool, error) {
+	status, err := git("status", "--short")
+	if err != nil {
+		return false, errors.Wrap(err, "exec error")
+	}
+	return status != "", nil
+}
+
+func PreRelease(currentVersion, identifier string) string {
 	return fmt.Sprintf("%s-%s", currentVersion, identifier)
 }
 
-func next(currentVersion, nextType string) (string, error) {
-	major, minor, patch, _, err := parts(currentVersion)
+func Next(currentVersion, nextType string) (string, error) {
+	major, minor, patch, _, err := Parts(currentVersion)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to get version parts")
 	}
 
 	switch nextType {
 	case "patch":
-		patch = patch + 1
+		patch++
 	case "minor":
-		minor = minor + 1
+		minor++
 		patch = 0
 	case "major":
-		major = major + 1
+		major++
 		minor = 0
 		patch = 0
 	default:
 		return "", errors.Errorf("Invalid value '%s' for next version. Supported values are 'patch', 'minor' and 'major'", nextType)
 	}
 
-	return fmt.Sprintf("%d.%d.%d", major, minor, patch), nil
+	tail := ""
+	dirty, err := isDirty()
+	if err != nil {
+		return "", err
+	}
+	if dirty {
+		tail = "-dirty"
+	}
+
+	return fmt.Sprintf("%d.%d.%d%s", major, minor, patch, tail), nil
 }
 
-func parts(version string) (major, minor, patch uint64, tail string, err error) {
+func Parts(version string) (uint64, uint64, uint64, string, error) {
+	var (
+		major, minor, patch uint64
+		tail                string
+		err                 error
+	)
+
 	matches := regexMajor.FindAllStringSubmatch(version, -1)
 	if matches == nil || len(matches) < 1 || len(matches[0]) < 2 {
 		return 0, 0, 0, "", errors.Errorf("'%s' doesn't look like a semver", version)
@@ -174,5 +197,5 @@ func parts(version string) (major, minor, patch uint64, tail string, err error) 
 
 	tail = matches[0][1]
 
-	return
+	return major, minor, patch, tail, err
 }

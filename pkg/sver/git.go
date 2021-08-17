@@ -1,4 +1,4 @@
-package main
+package sver
 
 import (
 	"os/exec"

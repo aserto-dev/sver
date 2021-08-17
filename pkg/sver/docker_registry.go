@@ -1,4 +1,4 @@
-package main
+package sver
 
 import (
 	"fmt"
@@ -14,7 +14,7 @@ import (
 	"github.com/google/go-containerregistry/pkg/v1/remote/transport"
 )
 
-func imageTags(repoName, username, password string) ([]string, error) {
+func ImageTags(repoName, username, password string) ([]string, error) {
 	repo, err := name.NewRepository(repoName)
 	if err != nil {
 		return nil, errors.Wrapf(err, "invalid repo name [%s]", repoName)
@@ -40,8 +40,8 @@ func imageTags(repoName, username, password string) ([]string, error) {
 	return tags, nil
 }
 
-func calculateTagsForVersion(version string, tags []string) ([]string, error) {
-	major, minor, _, tail, err := parts(version)
+func CalculateTagsForVersion(version string, tags []string) ([]string, error) {
+	major, minor, _, tail, err := Parts(version)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to parse version")
 	}

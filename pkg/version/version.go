@@ -1,4 +1,4 @@
-package main
+package version
 
 import (
 	"fmt"
@@ -6,11 +6,11 @@ import (
 	"time"
 )
 
-// package global var, value set by linker using ldflag -X
+// values set by linker using ldflag -X
 var (
-	ver    string //nolint:gochecknoglobals
-	date   string //nolint:gochecknoglobals
-	commit string //nolint:gochecknoglobals
+	ver    string // nolint:gochecknoglobals // set by linker
+	date   string // nolint:gochecknoglobals // set by linker
+	commit string // nolint:gochecknoglobals // set by linker
 )
 
 // Info - version info.
@@ -20,7 +20,7 @@ type Info struct {
 	Commit  string
 }
 
-// GetInfo - get version stamp information.
+// GetInfo gets version stamp information.
 func GetInfo() Info {
 	if ver == "" {
 		ver = "0.0.0"
@@ -31,7 +31,7 @@ func GetInfo() Info {
 	}
 
 	if commit == "" {
-		commit = "Undefined"
+		commit = "undefined"
 	}
 
 	return Info{
@@ -41,7 +41,7 @@ func GetInfo() Info {
 	}
 }
 
-// String() -- return version info string.
+// String() returns the version info string.
 func (vi Info) String() string {
 	return fmt.Sprintf("%s g%s %s-%s [%s]",
 		vi.Version,

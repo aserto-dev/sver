@@ -1,4 +1,4 @@
-package main
+package sver
 
 import (
 	"io/ioutil"
@@ -41,7 +41,7 @@ var _ = Describe("sver", func() {
 
 		Context("when current dir is not a git work tree", func() {
 			It("raises an error", func() {
-				_, err := currentVersion()
+				_, err := CurrentVersion()
 				Expect(err).To(HaveOccurred())
 			})
 		})
@@ -49,7 +49,7 @@ var _ = Describe("sver", func() {
 		Context("when current dir is a git work tree", func() {
 			It("does not raise", func() {
 				createGitDirWithTag("v0.0.1")
-				_, err := currentVersion()
+				_, err := CurrentVersion()
 				Expect(err).ToNot(HaveOccurred())
 			})
 		})
@@ -57,7 +57,7 @@ var _ = Describe("sver", func() {
 		Context("when the current tag is a semver version", func() {
 			It("does not raise an error", func() {
 				createGitDirWithTag("v0.0.1")
-				_, err := currentVersion()
+				_, err := CurrentVersion()
 				Expect(err).ToNot(HaveOccurred())
 			})
 		})
@@ -65,7 +65,7 @@ var _ = Describe("sver", func() {
 		Context("when the current tag is a not a semver version", func() {
 			It("raises an error", func() {
 				createGitDirWithTag("some_tag")
-				_, err := currentVersion()
+				_, err := CurrentVersion()
 				Expect(err).To(HaveOccurred())
 			})
 		})
@@ -77,7 +77,7 @@ var _ = Describe("sver", func() {
 
 				Expect(err).ToNot(HaveOccurred())
 
-				version, err := currentVersion()
+				version, err := CurrentVersion()
 				Expect(err).ToNot(HaveOccurred())
 				Expect(version).To(MatchRegexp(`^0\.0\.0-[0-9]{14}\.0\.g[0-9a-fA-F]{8}$`))
 			})
@@ -86,7 +86,7 @@ var _ = Describe("sver", func() {
 		Context("when the current tag is a semver tag with a `+` element", func() {
 			It("raise with an error that this not supported", func() {
 				createGitDirWithTag("1.0.2+gold")
-				_, err := currentVersion()
+				_, err := CurrentVersion()
 				Expect(err).To(HaveOccurred())
 			})
 		})
@@ -94,7 +94,7 @@ var _ = Describe("sver", func() {
 		Context("when the current tag is a semver tag without a `v` in front", func() {
 			It("does not raise and returns the correct semver version", func() {
 				createGitDirWithTag("1.0.2")
-				version, err := currentVersion()
+				version, err := CurrentVersion()
 				Expect(err).ToNot(HaveOccurred())
 				Expect(version).To(MatchRegexp(`^1\.0\.2$`))
 			})
@@ -109,7 +109,7 @@ var _ = Describe("sver", func() {
 
 				Context("when there are no uncommitted changes", func() {
 					It("returns a pre-release version without a dirty tag", func() {
-						version, err := currentVersion()
+						version, err := CurrentVersion()
 						Expect(err).ToNot(HaveOccurred())
 						Expect(version).To(MatchRegexp(`^1\.0\.2-[0-9]{14}\.1\.g[0-9a-fA-F]{8}$`))
 					})
@@ -118,9 +118,9 @@ var _ = Describe("sver", func() {
 				Context("when there are uncommitted changes", func() {
 					Context("in files tracked by git", func() {
 						It("returns a pre-release version with a dirty tag", func() {
-							createUncomittedChanges("tracked_file")
+							createUncomittedChanges()
 
-							version, err := currentVersion()
+							version, err := CurrentVersion()
 							Expect(err).ToNot(HaveOccurred())
 							Expect(version).To(MatchRegexp(`^1\.0\.2-[0-9]{14}\.1\.g[0-9a-fA-F]{8}-dirty$`))
 						})
@@ -128,10 +128,10 @@ var _ = Describe("sver", func() {
 
 					Context("in files not tracked by git", func() {
 						It("returns a pre-release version with a dirty tag", func() {
-							err := ioutil.WriteFile("some_untracked_file", []byte("Dummy content"), 0655)
+							err := ioutil.WriteFile("some_untracked_file", []byte("Dummy content"), 0600)
 							Expect(err).ToNot(HaveOccurred())
 
-							version, err := currentVersion()
+							version, err := CurrentVersion()
 							Expect(err).ToNot(HaveOccurred())
 							Expect(version).To(MatchRegexp(`^1\.0\.2-[0-9]{14}\.1\.g[0-9a-fA-F]{8}-dirty$`))
 						})
@@ -147,7 +147,7 @@ var _ = Describe("sver", func() {
 
 				Context("when there are no uncommitted changes", func() {
 					It("returns a pre-release version without a dirty tag", func() {
-						version, err := currentVersion()
+						version, err := CurrentVersion()
 						Expect(err).ToNot(HaveOccurred())
 						Expect(version).To(MatchRegexp(`^2\.4\.0-alpha\.foo-[0-9]{14}\.1\.g[0-9a-fA-F]{8}$`))
 					})
@@ -156,9 +156,9 @@ var _ = Describe("sver", func() {
 				Context("when there are uncommitted changes", func() {
 					Context("in files tracked by git", func() {
 						It("returns a pre-release version with a dirty tag", func() {
-							createUncomittedChanges("tracked_file")
+							createUncomittedChanges()
 
-							version, err := currentVersion()
+							version, err := CurrentVersion()
 							Expect(err).ToNot(HaveOccurred())
 							Expect(version).To(MatchRegexp(`^2\.4\.0-alpha\.foo-[0-9]{14}\.1\.g[0-9a-fA-F]{8}-dirty$`))
 						})
@@ -166,10 +166,10 @@ var _ = Describe("sver", func() {
 
 					Context("in files not tracked by git", func() {
 						It("returns a pre-release version with a dirty tag", func() {
-							err := ioutil.WriteFile("some_untracked_file", []byte("Dummy content"), 0655)
+							err := ioutil.WriteFile("some_untracked_file", []byte("Dummy content"), 0600)
 							Expect(err).ToNot(HaveOccurred())
 
-							version, err := currentVersion()
+							version, err := CurrentVersion()
 							Expect(err).ToNot(HaveOccurred())
 							Expect(version).To(MatchRegexp(`^2\.4\.0-alpha\.foo-[0-9]{14}\.1\.g[0-9a-fA-F]{8}-dirty$`))
 						})
@@ -186,7 +186,7 @@ var _ = Describe("sver", func() {
 
 				Context("when there are no uncommitted changes", func() {
 					It("returns just the release version", func() {
-						version, err := currentVersion()
+						version, err := CurrentVersion()
 						Expect(err).ToNot(HaveOccurred())
 						Expect(version).To(MatchRegexp(`^1\.0\.2$`))
 					})
@@ -194,8 +194,8 @@ var _ = Describe("sver", func() {
 
 				Context("when there are uncommitted changes", func() {
 					It("returns the release version with a dirty tag", func() {
-						createUncomittedChanges("tracked_file")
-						version, err := currentVersion()
+						createUncomittedChanges()
+						version, err := CurrentVersion()
 						Expect(err).ToNot(HaveOccurred())
 						Expect(version).To(MatchRegexp(`^1\.0\.2-dirty$`))
 					})
@@ -209,7 +209,7 @@ var _ = Describe("sver", func() {
 
 				Context("when there are no uncommitted changes", func() {
 					It("returns just the alpha version", func() {
-						version, err := currentVersion()
+						version, err := CurrentVersion()
 						Expect(err).ToNot(HaveOccurred())
 						Expect(version).To(MatchRegexp(`^2\.4\.0-alpha\.foo$`))
 					})
@@ -217,8 +217,8 @@ var _ = Describe("sver", func() {
 
 				Context("when there are uncommitted changes", func() {
 					It("returns the alpha version with a dirty tag", func() {
-						createUncomittedChanges("tracked_file")
-						version, err := currentVersion()
+						createUncomittedChanges()
+						version, err := CurrentVersion()
 						Expect(err).ToNot(HaveOccurred())
 						Expect(version).To(MatchRegexp(`^2\.4\.0-alpha\.foo-dirty$`))
 					})
@@ -234,9 +234,9 @@ var _ = Describe("sver", func() {
 
 		Context("when pre-release is used", func() {
 			It("calculates the next patch version", func() {
-				version, err := currentVersion()
+				version, err := CurrentVersion()
 				Expect(err).ToNot(HaveOccurred())
-				version = preRelease(version, "nightly")
+				version = PreRelease(version, "nightly")
 
 				Expect(version).To(Equal(`10.200.5-nightly`))
 			})
@@ -244,13 +244,13 @@ var _ = Describe("sver", func() {
 
 		Context("when pre-release is used and worktree is dirty", func() {
 			BeforeEach(func() {
-				createUncomittedChanges("tracked_file")
+				createUncomittedChanges()
 			})
 
 			It("calculates the next patch version", func() {
-				version, err := currentVersion()
+				version, err := CurrentVersion()
 				Expect(err).ToNot(HaveOccurred())
-				version = preRelease(version, "nightly")
+				version = PreRelease(version, "nightly")
 
 				Expect(version).To(Equal(`10.200.5-dirty-nightly`))
 			})
@@ -264,9 +264,9 @@ var _ = Describe("sver", func() {
 
 		Context("when patch is used", func() {
 			It("calculates the next patch version", func() {
-				version, err := currentVersion()
+				version, err := CurrentVersion()
 				Expect(err).ToNot(HaveOccurred())
-				version, err = next(version, "patch")
+				version, err = Next(version, "patch")
 				Expect(err).ToNot(HaveOccurred())
 
 				Expect(version).To(Equal(`10.200.6`))
@@ -275,9 +275,9 @@ var _ = Describe("sver", func() {
 
 		Context("when minor is used", func() {
 			It("calculates the next minor version", func() {
-				version, err := currentVersion()
+				version, err := CurrentVersion()
 				Expect(err).ToNot(HaveOccurred())
-				version, err = next(version, "minor")
+				version, err = Next(version, "minor")
 				Expect(err).ToNot(HaveOccurred())
 
 				Expect(version).To(Equal(`10.201.0`))
@@ -286,19 +286,58 @@ var _ = Describe("sver", func() {
 
 		Context("when major is used", func() {
 			It("calculates the next major version", func() {
-				version, err := currentVersion()
+				version, err := CurrentVersion()
 				Expect(err).ToNot(HaveOccurred())
-				version, err = next(version, "major")
+				version, err = Next(version, "major")
 				Expect(err).ToNot(HaveOccurred())
 
 				Expect(version).To(Equal(`11.0.0`))
+			})
+		})
+
+		Context("when the tree is dirty", func() {
+			BeforeEach(func() {
+				createUncomittedChanges()
+			})
+
+			Context("when patch is used", func() {
+				It("calculates the next patch version", func() {
+					version, err := CurrentVersion()
+					Expect(err).ToNot(HaveOccurred())
+					version, err = Next(version, "patch")
+					Expect(err).ToNot(HaveOccurred())
+
+					Expect(version).To(Equal(`10.200.6-dirty`))
+				})
+			})
+
+			Context("when minor is used", func() {
+				It("calculates the next minor version", func() {
+					version, err := CurrentVersion()
+					Expect(err).ToNot(HaveOccurred())
+					version, err = Next(version, "minor")
+					Expect(err).ToNot(HaveOccurred())
+
+					Expect(version).To(Equal(`10.201.0-dirty`))
+				})
+			})
+
+			Context("when major is used", func() {
+				It("calculates the next major version", func() {
+					version, err := CurrentVersion()
+					Expect(err).ToNot(HaveOccurred())
+					version, err = Next(version, "major")
+					Expect(err).ToNot(HaveOccurred())
+
+					Expect(version).To(Equal(`11.0.0-dirty`))
+				})
 			})
 		})
 	})
 })
 
 func createCommit(fileName string) {
-	err := ioutil.WriteFile(fileName, []byte("Dummy content"), 0655)
+	err := ioutil.WriteFile(fileName, []byte("Dummy content"), 0600)
 	Expect(err).ToNot(HaveOccurred())
 
 	_, err = git("add", fileName)
@@ -318,10 +357,10 @@ func createGitDirWithTag(tag string) {
 	Expect(err).ToNot(HaveOccurred())
 }
 
-func createUncomittedChanges(file string) {
-	err := ioutil.WriteFile(file, []byte("Dummy content"), 0655)
+func createUncomittedChanges() {
+	err := ioutil.WriteFile("tracked_file", []byte("Dummy content"), 0600)
 	Expect(err).ToNot(HaveOccurred())
 
-	_, err = git("add", file)
+	_, err = git("add", "tracked_file")
 	Expect(err).ToNot(HaveOccurred())
 }

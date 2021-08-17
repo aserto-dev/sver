@@ -5,6 +5,8 @@ import (
 	"net/url"
 	"os"
 
+	"github.com/aserto-dev/sver/pkg/sver"
+	"github.com/aserto-dev/sver/pkg/version"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -23,17 +25,17 @@ var (
 var rootCmd = &cobra.Command{
 	Use: "sver [flags]",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		version, err := currentVersion()
+		version, err := sver.CurrentVersion()
 		if err != nil {
 			return err
 		}
 
 		if flagPreRelease != "" {
-			version = preRelease(version, flagPreRelease)
+			version = sver.PreRelease(version, flagPreRelease)
 		}
 
 		if flagNext != "" {
-			version, err = next(version, flagNext)
+			version, err = sver.Next(version, flagNext)
 			if err != nil {
 				return err
 			}
@@ -44,7 +46,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		if flagMinorOnly {
-			major, minor, _, tail, err := parts(version)
+			major, minor, _, tail, err := sver.Parts(version)
 			if err != nil {
 				return errors.Wrap(err, "failed to get version parts")
 			}
@@ -55,7 +57,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		if flagMajorOnly {
-			major, _, _, tail, err := parts(version)
+			major, _, _, tail, err := sver.Parts(version)
 			if err != nil {
 				return errors.Wrap(err, "failed to get version parts")
 			}
@@ -77,7 +79,7 @@ var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print version and exit",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("sver %s\n", GetInfo().String())
+		fmt.Printf("sver %s\n", version.GetInfo().String())
 	},
 	SilenceErrors: true,
 	SilenceUsage:  true,
@@ -91,13 +93,13 @@ Depending on whether the current version is a development version and if
 it's the latest one, it returns the appropriate tags to be pushed.`,
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		version, err := currentVersion()
+		version, err := sver.CurrentVersion()
 		if err != nil {
 			return err
 		}
 
 		if flagPreRelease != "" {
-			version = preRelease(version, flagPreRelease)
+			version = sver.PreRelease(version, flagPreRelease)
 		}
 
 		serverURL, err := url.Parse(flagTagsServerURL)
@@ -110,12 +112,12 @@ it's the latest one, it returns the appropriate tags to be pushed.`,
 			host = serverURL.Host
 		}
 
-		existingTags, err := imageTags(host+"/"+args[0], flagTagsUsername, flagTagsPassword)
+		existingTags, err := sver.ImageTags(host+"/"+args[0], flagTagsUsername, flagTagsPassword)
 		if err != nil {
 			return err
 		}
 
-		tags, err := calculateTagsForVersion(version, existingTags)
+		tags, err := sver.CalculateTagsForVersion(version, existingTags)
 		if err != nil {
 			return err
 		}

@@ -1,29 +1,23 @@
 FROM golang:1.16-alpine AS build
-ARG SSH_PRIVATE_KEY
-RUN apk add --no-cache bash build-base git tree curl protobuf openssh
-WORKDIR /src
 
-# make sure git ssh is properly setup so we can access private repos
-RUN mkdir -p $HOME/.ssh && umask 0077 && echo -e "${SSH_PRIVATE_KEY}" > $HOME/.ssh/id_rsa \
-	&& git config --global url."git@github.com:".insteadOf https://github.com/ \
-	&& ssh-keyscan github.com >> $HOME/.ssh/known_hosts
+RUN apk add --no-cache bash build-base git tree curl
+WORKDIR /src
 
 # dowload debugger into Docker cacheable layer
 ENV CGO_ENABLED=0
 ENV GO111MODULE=on
 ENV GOBIN=/bin
-ENV GOPRIVATE=github.com/aserto-dev
 ENV ROOT_DIR=/src
 
 # download dependencies into Docker cacheable layer
-COPY go.mod go.sum Makefile ./
+COPY go.mod go.sum ./
 RUN go mod download
 
 # generate & build
 ARG VERSION
 ARG COMMIT
 COPY . .
-RUN make deps build
+RUN mage deps build
 
 FROM alpine
 ARG VERSION
