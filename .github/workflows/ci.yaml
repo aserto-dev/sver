@@ -126,7 +126,7 @@ jobs:
           token: ${{ secrets.VAULT_TOKEN }}
           secrets: |
             kv/data/github  "HOMEBREW_TAP"      | HOMEBREW_TAP;
-            kv/data/github  "READ_WRITE_TOKEN"  | READ_WRITE_TOKEN;
+            kv/data/github  "ROOT_TOKEN"        | ROOT_TOKEN;
       - name: Install Vault CLI
         uses: innovationnorway/setup-vault@v1.0.3
         with:
@@ -139,6 +139,6 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ steps.vault.outputs.READ_WRITE_TOKEN }}
-          HOMEBREW_TAP: ${{ steps.vault.outputs.HOMEBREW_TAP }}
+          HOMEBREW_TAP: ${{ steps.vault.outputs.ROOT_TOKEN }}
         run: |
           go run mage.go deps release
