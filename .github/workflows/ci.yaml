@@ -96,7 +96,8 @@ jobs:
       - name: Build and push image
         run: |
           eval `ssh-agent`
-          go run mage.go deps dockerImage dockerPush
+          go run mage.go deps dockerImage
+          go run dockerPush ghcr.io "aserto-dev/$IMAGE_NAME"
   release:
     needs: test
     runs-on: ubuntu-latest
