@@ -7,15 +7,14 @@ WORKDIR /src
 ENV GOBIN=/bin
 ENV ROOT_DIR=/src
 
-# download dependencies into Docker cacheable layer
-COPY go.mod go.sum ./
-RUN go mod download
-
 # generate & build
 ARG VERSION
 ARG COMMIT
 COPY . .
-RUN go run mage.go deps build
+RUN --mount=type=cache,target=/go/pkg/mod \
+		--mount=type=cache,target=/root/.cache/go-build \
+		--mount=type=ssh \
+    go run mage.go deps build
 
 FROM alpine
 ARG VERSION
