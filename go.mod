@@ -2,7 +2,7 @@ module github.com/aserto-dev/sver
 
 go 1.14
 
-replace github.com/aserto-dev/mage-loot => ../mage-loot
+// replace github.com/aserto-dev/mage-loot => ../mage-loot
 
 require (
 	github.com/Masterminds/semver v1.5.0
