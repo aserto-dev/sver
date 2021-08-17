@@ -99,6 +99,8 @@ github.com/aserto-dev/clui v0.1.1 h1:jFVECui7pyaZyymeXtw8qkBI+67wtQJfiIpd06MdToU
 github.com/aserto-dev/clui v0.1.1/go.mod h1:rk87XJefw6Pp8ef3nTirzMVTDE0g2BWojwAZy3cC/TY=
 github.com/aserto-dev/mage-loot v0.3.2 h1:fLZTvp2LIyGl5XzTbTj/9sNlc1baZO6UF1xUSxy55Ks=
 github.com/aserto-dev/mage-loot v0.3.2/go.mod h1:7nGDQbIBIz53R98VUT/8xD6DQGuxigQ5cmTI0t4PEQU=
+github.com/aserto-dev/mage-loot v0.3.3 h1:cGYPBoF3ybRm0+bJM4o/+/3CderX8QOcQGwaGChAyfg=
+github.com/aserto-dev/mage-loot v0.3.3/go.mod h1:AEFFhp5pKAAwsRrU75DIGIPtenyngF/RVeVB4Lk1yI4=
 github.com/aws/aws-sdk-go v1.15.11/go.mod h1:mFuSZ37Z9YOHbQEwBWztmVzqXrEkub65tZoCYDt7FT0=
 github.com/beorn7/perks v0.0.0-20160804104726-4c0e84591b9a/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
