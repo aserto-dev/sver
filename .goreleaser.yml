@@ -69,6 +69,8 @@ brews:
 
     url_template: "https://github.com/aserto-dev/sver/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
 
+    download_strategy: CurlDownloadStrategy
+
     commit_author:
       name: Aserto Bot
       email: github-bot@aserto.com
@@ -83,6 +85,5 @@ brews:
 
     test: |
       system "#{bin}/sver version"
-
     install: |
       bin.install "sver"
