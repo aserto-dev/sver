@@ -12,9 +12,9 @@ go:
   goreleaser:
     importPath: github.com/goreleaser/goreleaser
     version: "v0.174.2"
-  calc-version:
-    importPath: "github.com/aserto-dev/calc-version"
-    version: "v1.1.4"
+  sver:
+    importPath: "github.com/aserto-dev/sver/cmd/sver"
+    version: "v1.2.3"
   gotestsum:
     importPath: "gotest.tools/gotestsum"
     version: "v1.6.2"

@@ -17,7 +17,7 @@ RUN go mod download
 ARG VERSION
 ARG COMMIT
 COPY . .
-RUN mage deps build
+RUN go run mage.go deps buildall
 
 FROM alpine
 ARG VERSION
@@ -30,6 +30,6 @@ LABEL org.opencontainers.image.url=https://aserto.com
 
 RUN apk add --no-cache bash git openssh
 WORKDIR /app
-COPY --from=build /src/bin/linux-amd64/sver /app/
+COPY --from=build /src/dist/build_linux_amd64/sver /app/
 
 ENTRYPOINT ["./sver"]

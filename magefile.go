@@ -5,13 +5,10 @@ package main
 import (
 	"fmt"
 	"os"
-	"runtime"
-	"time"
 
 	"github.com/aserto-dev/mage-loot/common"
 	"github.com/aserto-dev/mage-loot/deps"
 	"github.com/magefile/mage/mg"
-	"github.com/magefile/mage/sh"
 	"github.com/pkg/errors"
 )
 
@@ -31,18 +28,13 @@ func Generate() error {
 
 // Build builds all binaries in ./cmd.
 func Build() error {
-	flags, err := ldflags()
-	if err != nil {
-		return err
-	}
-
-	return common.Build(flags...)
+	return common.BuildReleaser()
 }
 
 // BuildAll builds all binaries in ./cmd for
 // all configured operating systems and architectures.
 func BuildAll() error {
-	return common.BuildAll()
+	return common.BuildAllReleaser()
 }
 
 // Lint runs linting for the entire project.
@@ -62,7 +54,33 @@ func DockerImage() error {
 		return errors.Wrap(err, "failed to calculate version")
 	}
 
-	return common.DockerImage(fmt.Sprintf("policy:%s", version))
+	return common.DockerImage(fmt.Sprintf("sver:%s", version))
+}
+
+// DockerPush builds the docker image using all tags specified by sver
+// and pushes it to the specified registry
+func DockerPush(registry, org string) error {
+	mg.SerialDeps(DockerImage)
+
+	tags, err := common.DockerTags(registry, fmt.Sprintf("%s/sver", org))
+	if err != nil {
+		return err
+	}
+
+	version, err := common.Version()
+	if err != nil {
+		return errors.Wrap(err, "failed to calculate version")
+	}
+
+	for _, tag := range tags {
+		common.UI.Normal().WithStringValue("tag", tag).Msg("pushing tag")
+		err = common.DockerPush(fmt.Sprintf("sver:%s", version), fmt.Sprintf("%s/%s/sver:%s", registry, org, tag))
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // Tag creates a new patch version tag and pushes it if it's not dirty.
@@ -90,6 +108,7 @@ func Tag() error {
 	return nil
 }
 
+// Deps installs all dependencies required to build this project
 func Deps() {
 	deps.GetAllDeps()
 }
@@ -100,27 +119,4 @@ func Deps() {
 func All() error {
 	mg.SerialDeps(Deps, Generate, Lint, Test, Build, DockerImage)
 	return nil
-}
-
-func ldflags() ([]string, error) {
-	commit, err := common.Commit()
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to calculate git commit")
-	}
-	version, err := common.Version()
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to calculate version")
-	}
-
-	date := time.Now().UTC().Format(time.RFC3339)
-
-	ldbase := "github.com/aserto-dev/policy/pkg/version"
-	ldflags := fmt.Sprintf(`-X %s.ver=%s -X %s.commit=%s -X %s.date=%s`,
-		ldbase, version, ldbase, commit, ldbase, date)
-
-	return []string{"-ldflags", ldflags}, nil
-}
-
-func Run() error {
-	return sh.RunV("./bin/"+runtime.GOOS+"-"+runtime.GOARCH+"/policy", "--config", "./pkg/testharness/testdata/config.yaml", "run")
 }
