@@ -97,7 +97,7 @@ jobs:
         run: |
           eval `ssh-agent`
           go run mage.go deps dockerImage
-          go run dockerPush ghcr.io "aserto-dev/$IMAGE_NAME"
+          go run mage.go dockerPush ghcr.io "aserto-dev/$IMAGE_NAME"
   release:
     needs: test
     runs-on: ubuntu-latest
