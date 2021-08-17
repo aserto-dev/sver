@@ -15,7 +15,7 @@ RUN go mod download
 ARG VERSION
 ARG COMMIT
 COPY . .
-RUN go run mage.go deps buildall
+RUN go run mage.go deps build
 
 FROM alpine
 ARG VERSION
