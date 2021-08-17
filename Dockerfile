@@ -1,4 +1,4 @@
-FROM golang:1.15-alpine AS build
+FROM golang:1.16-alpine AS build
 ARG SSH_PRIVATE_KEY
 RUN apk add --no-cache bash build-base git tree curl protobuf openssh
 WORKDIR /src
