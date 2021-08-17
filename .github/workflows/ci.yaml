@@ -138,7 +138,7 @@ jobs:
           vault token renew
       - name: Release
         env:
-          GITHUB_TOKEN: ${{ steps.vault.outputs.READ_WRITE_TOKEN }}
-          HOMEBREW_TAP: ${{ steps.vault.outputs.ROOT_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.vault.outputs.ROOT_TOKEN }}
+          HOMEBREW_TAP: ${{ steps.vault.outputs.HOMEBREW_TAP }}
         run: |
           go run mage.go deps release
