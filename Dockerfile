@@ -4,8 +4,6 @@ RUN apk add --no-cache bash build-base git tree curl
 WORKDIR /src
 
 # dowload debugger into Docker cacheable layer
-ENV CGO_ENABLED=0
-ENV GO111MODULE=on
 ENV GOBIN=/bin
 ENV ROOT_DIR=/src
 

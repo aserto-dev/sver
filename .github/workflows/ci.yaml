@@ -95,6 +95,7 @@ jobs:
           password: ${{ env.DOCKER_PASSWORD }}
       - name: Build and push image
         run: |
+          eval `ssh-agent`
           go run mage.go deps dockerImage dockerPush
   release:
     needs: test
