@@ -1,9 +1,8 @@
 before:
   hooks:
-  
+
 builds:
-  - 
-    id: build
+  - id: build
     main: ./cmd/sver
     binary: sver
     goos:
@@ -19,12 +18,12 @@ builds:
       - goos: windows
         goarch: arm64
     ldflags:
-      - -s 
-      - -w 
-      - -X main.ver={{.Version}} 
-      - -X main.commit={{.ShortCommit}} 
-      - -X main.date={{.Date}} 
-    mod_timestamp: '{{ .CommitTimestamp }}'
+      - -s
+      - -w
+      - -X main.ver={{.Version}}
+      - -X main.commit={{.ShortCommit}}
+      - -X main.date={{.Date}}
+    mod_timestamp: "{{ .CommitTimestamp }}"
 
 archives:
   - format: zip
@@ -39,7 +38,7 @@ archives:
     name_template: "sver{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
 
 snapshot:
   name_template: "{{ .Tag }}"
@@ -48,8 +47,8 @@ changelog:
   sort: asc
   filters:
     exclude:
-      - '^docs:'
-      - '^test:'
+      - "^docs:"
+      - "^test:"
 
 release:
   github:
@@ -61,8 +60,7 @@ release:
   name_template: "sver {{.Tag}}"
 
 brews:
-  -
-    name: sver
+  - name: sver
 
     tap:
       owner: aserto-dev
