@@ -6,7 +6,7 @@ go 1.14
 
 require (
 	github.com/Masterminds/semver v1.5.0
-	github.com/aserto-dev/mage-loot v0.4.2
+	github.com/aserto-dev/mage-loot v0.4.3
 	github.com/fatih/color v1.12.0 // indirect
 	github.com/google/go-containerregistry v0.6.0
 	github.com/magefile/mage v1.11.0
@@ -17,7 +17,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.2.1
 	github.com/tidwall/pretty v1.2.0 // indirect
-	golang.org/x/sys v0.0.0-20210816183151-1e6c022a8912 // indirect
+	golang.org/x/sys v0.0.0-20210817134402-fefb4affbef3 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 )

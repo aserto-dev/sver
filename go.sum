@@ -107,6 +107,8 @@ github.com/aserto-dev/mage-loot v0.4.1 h1:tJ1L4haKYrNQfGwohSG5spToVaCd2MO5eaQNnw
 github.com/aserto-dev/mage-loot v0.4.1/go.mod h1:AEFFhp5pKAAwsRrU75DIGIPtenyngF/RVeVB4Lk1yI4=
 github.com/aserto-dev/mage-loot v0.4.2 h1:BSBqFJKTIKLNzV27jiC9/G7k6i2duOv+q0x3MCe9f7M=
 github.com/aserto-dev/mage-loot v0.4.2/go.mod h1:7ZBHBeo88BCQlhVCDZXL2b9x1h9nRJBqkiMxhsPBunw=
+github.com/aserto-dev/mage-loot v0.4.3 h1:ksG/sFF61zm3asI0IoGAbm3eIjTWx9uIHf4bBrZuTbo=
+github.com/aserto-dev/mage-loot v0.4.3/go.mod h1:7ZBHBeo88BCQlhVCDZXL2b9x1h9nRJBqkiMxhsPBunw=
 github.com/aws/aws-sdk-go v1.15.11/go.mod h1:mFuSZ37Z9YOHbQEwBWztmVzqXrEkub65tZoCYDt7FT0=
 github.com/beorn7/perks v0.0.0-20160804104726-4c0e84591b9a/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
@@ -978,6 +980,8 @@ golang.org/x/sys v0.0.0-20210816074244-15123e1e1f71 h1:ikCpsnYR+Ew0vu99XlDp55lGg
 golang.org/x/sys v0.0.0-20210816074244-15123e1e1f71/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20210816183151-1e6c022a8912 h1:uCLL3g5wH2xjxVREVuAbP9JM5PPKjRbXKRa6IBjkzmU=
 golang.org/x/sys v0.0.0-20210816183151-1e6c022a8912/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+golang.org/x/sys v0.0.0-20210817134402-fefb4affbef3 h1:VU4cjb3pNZovHYRs/2E8zPrpLC05+GT2uqqgIFtt0jc=
+golang.org/x/sys v0.0.0-20210817134402-fefb4affbef3/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=
 golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=

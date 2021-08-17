@@ -31,6 +31,11 @@ func Build() error {
 	return common.BuildReleaser()
 }
 
+// Release releases the project.
+func Release() error {
+	return common.Release()
+}
+
 // BuildAll builds all binaries in ./cmd for
 // all configured operating systems and architectures.
 func BuildAll() error {
@@ -60,8 +65,6 @@ func DockerImage() error {
 // DockerPush builds the docker image using all tags specified by sver
 // and pushes it to the specified registry
 func DockerPush(registry, org string) error {
-	mg.SerialDeps(DockerImage)
-
 	tags, err := common.DockerTags(registry, fmt.Sprintf("%s/sver", org))
 	if err != nil {
 		return err
