@@ -94,6 +94,8 @@ func Tag() error {
 		return errors.New("your tree is in a dirty state")
 	}
 
+	newTag = "v" + newTag
+
 	err = common.GitTag(newTag)
 	if err != nil {
 		return err
