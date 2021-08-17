@@ -42,6 +42,8 @@ jobs:
         run: |
           go run mage.go lint
       - name: Test
+        env:
+          VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
         run: |
           git config --global user.email "github-bot@aserto.com"
           git config --global user.name "Aserto Bot"
