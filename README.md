@@ -3,6 +3,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/aserto-dev/sver.svg)](https://pkg.go.dev/github.com/aserto-dev/sver)
 [![Coverage Status](https://coveralls.io/repos/github/aserto-dev/sver/badge.svg?branch=main)](https://coveralls.io/github/aserto-dev/sver?branch=main)
 [![ci](https://github.com/aserto-dev/sver/actions/workflows/ci.yaml/badge.svg)](https://github.com/aserto-dev/sver/actions/workflows/ci.yaml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/aserto-dev/sver)](https://goreportcard.com/report/github.com/aserto-dev/sver)
 
 Calculates semantic versions in a git repo.
 
