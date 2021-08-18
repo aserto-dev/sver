@@ -48,6 +48,10 @@ jobs:
           git config --global user.email "github-bot@aserto.com"
           git config --global user.name "Aserto Bot"
           go run mage.go test
+      - name: Upload code coverage
+        uses: shogo82148/actions-goveralls@v1
+        with:
+          path-to-profile: cover.out
   push:
     needs: test
     runs-on: ubuntu-latest
