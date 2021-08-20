@@ -28,5 +28,6 @@ LABEL org.opencontainers.image.url=https://aserto.com
 RUN apk add --no-cache bash git openssh
 WORKDIR /app
 COPY --from=build /src/dist/build_linux_amd64/sver /app/
+COPY --from=build /src/gh-action-entrypoint.sh /app/
 
 ENTRYPOINT ["/app/sver"]
