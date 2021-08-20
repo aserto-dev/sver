@@ -29,4 +29,4 @@ RUN apk add --no-cache bash git openssh
 WORKDIR /app
 COPY --from=build /src/dist/build_linux_amd64/sver /app/
 
-ENTRYPOINT ["./sver"]
+ENTRYPOINT ["/app/sver"]
