@@ -23,7 +23,7 @@ var (
 	regexTail  = regexp.MustCompile(`^\d+\.\d+\.\d+(.*)`)
 )
 
-func CurrentVersion() (string, error) {
+func CurrentVersion(releaseOnly, force bool) (string, error) {
 	err := verifyGit()
 	if err != nil {
 		return "", errors.Wrap(err, "git error")
@@ -59,6 +59,10 @@ func CurrentVersion() (string, error) {
 		return "", errors.Wrap(err, "exec error")
 	}
 	if pointsAt == "" {
+		if releaseOnly {
+			return "", errors.New("not on a tag, this is a pre release version")
+		}
+
 		// The commit timestamp should be in the format yyyymmddHHMMSS in UTC.
 		gitCommitTimestamp, err := git("show", "--no-patch", "--format=%ct", "HEAD")
 		if err != nil {
@@ -96,12 +100,18 @@ func CurrentVersion() (string, error) {
 
 	// If there's a change in the source tree that didn't get committed, append
 	// `-dirty` to the version string.
-	dirty, err := isDirty()
-	if err != nil {
-		return "", err
+	dirty := false
+	if !force {
+		dirty, err = isDirty()
+		if err != nil {
+			return "", err
+		}
 	}
 	if dirty {
 		version = fmt.Sprintf("%s-dirty", version)
+		if releaseOnly {
+			return "", errors.New("version is dirty")
+		}
 	}
 
 	version = strings.TrimPrefix(version, "v")

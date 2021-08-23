@@ -12,10 +12,13 @@ import (
 )
 
 var (
-	flagNext       = ""
-	flagMajorOnly  = false
-	flagMinorOnly  = false
-	flagPreRelease = ""
+	flagNext        = ""
+	flagMajorOnly   = false
+	flagMinorOnly   = false
+	flagPreRelease  = ""
+	flagForce       = false
+	flagReleaseOnly = false
+	flagPrefix      = false
 
 	flagTagsServerURL = ""
 	flagTagsUsername  = ""
@@ -25,7 +28,11 @@ var (
 var rootCmd = &cobra.Command{
 	Use: "sver [flags]",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		version, err := sver.CurrentVersion()
+		if flagPreRelease != "" {
+			return errors.New("Asked for a pre-release version, but the --release flag is on.")
+		}
+
+		version, err := sver.CurrentVersion(flagReleaseOnly, flagForce)
 		if err != nil {
 			return err
 		}
@@ -67,7 +74,11 @@ var rootCmd = &cobra.Command{
 			version = fmt.Sprintf("%d", major)
 		}
 
-		fmt.Println(version)
+		if flagPrefix {
+			fmt.Println("v" + version)
+		} else {
+			fmt.Println(version)
+		}
 
 		return nil
 	},
@@ -93,7 +104,11 @@ Depending on whether the current version is a development version and if
 it's the latest one, it returns the appropriate tags to be pushed.`,
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		version, err := sver.CurrentVersion()
+		if flagPreRelease != "" {
+			return errors.New("Asked for a pre-release version, but the --release flag is on.")
+		}
+
+		version, err := sver.CurrentVersion(flagReleaseOnly, flagForce)
 		if err != nil {
 			return err
 		}
@@ -123,7 +138,11 @@ it's the latest one, it returns the appropriate tags to be pushed.`,
 		}
 
 		for _, tag := range tags {
-			fmt.Println(tag)
+			if flagPrefix {
+				fmt.Println("v" + tag)
+			} else {
+				fmt.Println(tag)
+			}
 		}
 
 		return nil
@@ -137,6 +156,9 @@ func main() {
 	rootCmd.Flags().StringVarP(&flagPreRelease, "pre-release", "", os.ExpandEnv("${PRE_RELEASE}"), `Adds a pre release identifier to the version. (env "PRE_RELEASE")`)
 	rootCmd.Flags().BoolVarP(&flagMajorOnly, "major-only", "m", false, "Only prints the major version. Fails if version is a development version.")
 	rootCmd.Flags().BoolVarP(&flagMinorOnly, "minor-only", "r", false, "Only prints the major and minor versions. Fails if version is a development version.")
+	rootCmd.Flags().BoolVarP(&flagReleaseOnly, "release", "", false, "Fail if this is a dev, pre-release or dirty version.")
+	rootCmd.Flags().BoolVarP(&flagForce, "force", "f", false, "Ignore a dirty repository.")
+	rootCmd.Flags().BoolVarP(&flagPrefix, "prefix", "p", false, "Add the 'v' prefix to the output version.")
 
 	tagsCmd.Flags().StringVarP(&flagTagsServerURL, "server", "s", "https://registry-1.docker.io/", "Registry server to connect to.")
 	tagsCmd.Flags().StringVarP(&flagTagsUsername, "user", "u", "", "Username for the registry.")
