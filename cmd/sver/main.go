@@ -28,7 +28,7 @@ var (
 var rootCmd = &cobra.Command{
 	Use: "sver [flags]",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if flagPreRelease != "" {
+		if flagPreRelease != "" && flagReleaseOnly {
 			return errors.New("Asked for a pre-release version, but the --release flag is on.")
 		}
 
@@ -104,7 +104,7 @@ Depending on whether the current version is a development version and if
 it's the latest one, it returns the appropriate tags to be pushed.`,
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if flagPreRelease != "" {
+		if flagPreRelease != "" && flagReleaseOnly {
 			return errors.New("Asked for a pre-release version, but the --release flag is on.")
 		}
 
