@@ -6,7 +6,7 @@ go 1.14
 
 require (
 	github.com/Masterminds/semver v1.5.0
-	github.com/aserto-dev/mage-loot v0.4.5
+	github.com/aserto-dev/mage-loot v0.4.13
 	github.com/fatih/color v1.12.0 // indirect
 	github.com/google/go-containerregistry v0.6.0
 	github.com/magefile/mage v1.11.0
