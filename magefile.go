@@ -1,3 +1,4 @@
+//go:build mage
 // +build mage
 
 package main
@@ -14,7 +15,7 @@ import (
 
 func init() {
 	// Set go version for docker builds
-	os.Setenv("GO_VERSION", "1.16")
+	os.Setenv("GO_VERSION", "1.17")
 	// Set private repositories
 	os.Setenv("GOPRIVATE", "github.com/aserto-dev")
 	// Enable docker buildkit capabilities
