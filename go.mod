@@ -1,23 +1,52 @@
 module github.com/aserto-dev/sver
 
-go 1.16
+go 1.17
 
 //replace github.com/aserto-dev/mage-loot => ../mage-loot
 
 require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/aserto-dev/mage-loot v0.4.16
-	github.com/docker/cli v20.10.11+incompatible // indirect
-	github.com/docker/docker v20.10.11+incompatible // indirect
-	github.com/fatih/color v1.13.0 // indirect
 	github.com/google/go-containerregistry v0.7.0
 	github.com/magefile/mage v1.11.0
-	github.com/mattn/go-runewidth v0.0.13 // indirect
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.17.0
-	github.com/opencontainers/image-spec v1.0.2 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.2.1
+)
+
+require (
+	github.com/allegro/bigcache/v3 v3.0.1 // indirect
+	github.com/aserto-dev/clui v0.1.8 // indirect
+	github.com/docker/cli v20.10.11+incompatible // indirect
+	github.com/docker/distribution v2.7.1+incompatible // indirect
+	github.com/docker/docker v20.10.11+incompatible // indirect
+	github.com/docker/docker-credential-helpers v0.6.4 // indirect
+	github.com/fatih/color v1.13.0 // indirect
+	github.com/fsnotify/fsnotify v1.4.9 // indirect
+	github.com/go-test/deep v1.0.8 // indirect
+	github.com/imdario/mergo v0.3.12 // indirect
+	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/kyokomi/emoji v2.2.4+incompatible // indirect
+	github.com/mattn/go-colorable v0.1.9 // indirect
+	github.com/mattn/go-isatty v0.0.14 // indirect
+	github.com/mattn/go-runewidth v0.0.13 // indirect
+	github.com/nxadm/tail v1.4.8 // indirect
+	github.com/olekukonko/tablewriter v0.0.5 // indirect
+	github.com/opencontainers/go-digest v1.0.0 // indirect
+	github.com/opencontainers/image-spec v1.0.2 // indirect
+	github.com/rivo/uniseg v0.2.0 // indirect
+	github.com/sirupsen/logrus v1.8.1 // indirect
+	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/tidwall/gjson v1.12.0 // indirect
+	github.com/tidwall/match v1.1.1 // indirect
+	github.com/tidwall/pretty v1.2.0 // indirect
+	github.com/ulikunitz/xz v0.5.10 // indirect
+	golang.org/x/net v0.0.0-20211111160137-58aab5ef257a // indirect
+	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20211124211545-fe61309f8881 // indirect
+	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
+	golang.org/x/text v0.3.6 // indirect
+	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
