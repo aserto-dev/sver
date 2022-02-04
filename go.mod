@@ -6,7 +6,7 @@ go 1.17
 
 require (
 	github.com/Masterminds/semver v1.5.0
-	github.com/aserto-dev/mage-loot v0.4.18
+	github.com/aserto-dev/mage-loot v0.4.19
 	github.com/google/go-containerregistry v0.8.0
 	github.com/magefile/mage v1.12.1
 	github.com/onsi/ginkgo v1.16.5

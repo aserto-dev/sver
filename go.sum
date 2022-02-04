@@ -105,8 +105,8 @@ github.com/armon/go-radix v1.0.0/go.mod h1:ufUuZ+zHj4x4TnLV4JWEpy2hxWSpsRywHrMgI
 github.com/asaskevich/govalidator v0.0.0-20190424111038-f61b66f89f4a/go.mod h1:lB+ZfQJz7igIIfQNfa7Ml4HSf2uFQQRzpGGRXenZAgY=
 github.com/aserto-dev/clui v0.1.10 h1:3TxiZYoEISmlw9doym8JKuBPSjY90t/AXtQu8GKrRsE=
 github.com/aserto-dev/clui v0.1.10/go.mod h1:XpJxwNzSQaGN6rqXONZJEaeez4MUaCPikM2lKSngrXM=
-github.com/aserto-dev/mage-loot v0.4.18 h1:40tEqAIswsdhm9k3vN4GdAeXelTce5L4FOcioOhBURI=
-github.com/aserto-dev/mage-loot v0.4.18/go.mod h1:m9aqJVi6/hSZIEkiA5fycE5Yg5bDS6gpSTJSzmrfk9A=
+github.com/aserto-dev/mage-loot v0.4.19 h1:m3kamVYtLU7lvU5LN71dDn2hf7lt/QUgqmPFRdAOOLU=
+github.com/aserto-dev/mage-loot v0.4.19/go.mod h1:m9aqJVi6/hSZIEkiA5fycE5Yg5bDS6gpSTJSzmrfk9A=
 github.com/aws/aws-sdk-go v1.15.11/go.mod h1:mFuSZ37Z9YOHbQEwBWztmVzqXrEkub65tZoCYDt7FT0=
 github.com/beorn7/perks v0.0.0-20160804104726-4c0e84591b9a/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
