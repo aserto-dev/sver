@@ -6,7 +6,7 @@ go 1.17
 
 require (
 	github.com/Masterminds/semver v1.5.0
-	github.com/aserto-dev/mage-loot v0.4.19
+	github.com/aserto-dev/mage-loot v0.8.0
 	github.com/google/go-containerregistry v0.8.0
 	github.com/magefile/mage v1.12.1
 	github.com/onsi/ginkgo v1.16.5
@@ -17,7 +17,7 @@ require (
 
 require (
 	github.com/allegro/bigcache/v3 v3.0.1 // indirect
-	github.com/aserto-dev/clui v0.1.10 // indirect
+	github.com/aserto-dev/clui v0.8.0 // indirect
 	github.com/docker/cli v20.10.12+incompatible // indirect
 	github.com/docker/distribution v2.7.1+incompatible // indirect
 	github.com/docker/docker v20.10.12+incompatible // indirect
