@@ -6,7 +6,7 @@ go 1.17
 
 require (
 	github.com/Masterminds/semver v1.5.0
-	github.com/aserto-dev/mage-loot v0.8.0
+	github.com/aserto-dev/mage-loot v0.8.1
 	github.com/google/go-containerregistry v0.8.0
 	github.com/magefile/mage v1.12.1
 	github.com/onsi/ginkgo v1.16.5
@@ -40,7 +40,7 @@ require (
 	github.com/rogpeppe/go-internal v1.8.1 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/tidwall/gjson v1.12.1 // indirect
+	github.com/tidwall/gjson v1.14.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/ulikunitz/xz v0.5.10 // indirect
