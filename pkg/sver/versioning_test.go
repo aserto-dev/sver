@@ -154,7 +154,7 @@ var _ = Describe("sver", func() {
 
 					Context("in files not tracked by git", func() {
 						It("returns a pre-release version with a dirty tag", func() {
-							err := ioutil.WriteFile("some_untracked_file", []byte("Dummy content"), 0600)
+							err := os.WriteFile("some_untracked_file", []byte("Dummy content"), 0600)
 							Expect(err).ToNot(HaveOccurred())
 
 							version, err := CurrentVersion(false, false)
@@ -192,7 +192,7 @@ var _ = Describe("sver", func() {
 
 					Context("in files not tracked by git", func() {
 						It("returns a pre-release version with a dirty tag", func() {
-							err := ioutil.WriteFile("some_untracked_file", []byte("Dummy content"), 0600)
+							err := os.WriteFile("some_untracked_file", []byte("Dummy content"), 0600)
 							Expect(err).ToNot(HaveOccurred())
 
 							version, err := CurrentVersion(false, false)
@@ -390,7 +390,7 @@ var _ = Describe("sver", func() {
 })
 
 func createCommit(fileName string) {
-	err := ioutil.WriteFile(fileName, []byte("Dummy content"), 0600)
+	err := os.WriteFile(fileName, []byte("Dummy content"), 0600)
 	Expect(err).ToNot(HaveOccurred())
 
 	_, err = git("add", fileName)
@@ -411,7 +411,7 @@ func createGitDirWithTag(tag string) {
 }
 
 func createUncomittedChanges() {
-	err := ioutil.WriteFile("tracked_file", []byte("Dummy content"), 0600)
+	err := os.WriteFile("tracked_file", []byte("Dummy content"), 0600)
 	Expect(err).ToNot(HaveOccurred())
 
 	_, err = git("add", "tracked_file")
