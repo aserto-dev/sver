@@ -62,7 +62,7 @@ jobs:
     if: github.event_name == 'push' && ( github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') )
     steps:
       - name: Read Configuration
-        uses: hashicorp/vault-action@v2.1.0
+        uses: hashicorp/vault-action@v2.4.1
         id: vault
         with:
           url: ${{ env.VAULT_ADDR }}
@@ -125,7 +125,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
       - name: Read Configuration
-        uses: hashicorp/vault-action@v2.1.0
+        uses: hashicorp/vault-action@v2.4.1
         id: vault
         with:
           url: ${{ env.VAULT_ADDR }}

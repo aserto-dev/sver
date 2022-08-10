@@ -1,25 +1,24 @@
 package sver
 
 import (
-	"github.com/aserto-dev/mage-loot/testutil"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("registry-versions", func() {
-	Context("image doesn't exist yet", func() {
+	Context("public image", func() {
 		It("reading tags from the repo doesn't error", func() {
-			tags, err := ImageTags("ghcr.io/aserto-dev/bb9d692b24ad4", "aserto-bot", testutil.VaultValue(ginkgoT, "github-bot.root-pat"))
+			tags, err := ImageTags("ghcr.io/aserto-dev/sver", "", "")
 
 			Expect(err).ToNot(HaveOccurred())
-			Expect(tags).To(HaveLen(0))
+			Expect(tags).ToNot(HaveLen(0))
 		})
 
 		It("returns all version tags", func() {
-			tags, err := ImageTags("ghcr.io/aserto-dev/bb9d692b24ad4", "aserto-bot", testutil.VaultValue(ginkgoT, "github-bot.root-pat"))
+			tags, err := ImageTags("ghcr.io/aserto-dev/sver", "", "")
 
 			Expect(err).ToNot(HaveOccurred())
-			Expect(tags).To(HaveLen(0))
+			Expect(tags).ToNot(HaveLen(0))
 		})
 
 	})
