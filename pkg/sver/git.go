@@ -1,6 +1,7 @@
 package sver
 
 import (
+	"bytes"
 	"os/exec"
 	"strings"
 
@@ -24,9 +25,11 @@ func verifyGit() error {
 	}
 
 	cmd := exec.Command(gitBinary, "rev-parse", "--is-inside-work-tree")
+	stdErrBuf := new(bytes.Buffer)
+	cmd.Stderr = stdErrBuf
 	err = cmd.Run()
 	if err != nil {
-		return errors.New("current directory is not a git working tree")
+		return errors.Wrapf(err, "could not determine if the current directory is a git working tree: %s", stdErrBuf.String())
 	}
 
 	return nil
