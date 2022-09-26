@@ -3,6 +3,10 @@ set -e
 
 export PRE_RELEASE="$INPUT_PRE_RELEASE"
 
+if [ -n ${GITHUB_WORKSPACE} ]; then
+  git config --global --add safe.directory "$GITHUB_WORKSPACE"
+fi
+
 if [ -n "${INPUT_DOCKER_IMAGE}" ]; then
   version=$(/app/sver tags -s "${INPUT_DOCKER_REGISTRY}" -u "${INPUT_DOCKER_USERNAME}" -p "${INPUT_DOCKER_PASSWORD}" "${INPUT_DOCKER_IMAGE}")
 elif [ -n "${INPUT_NEXT}" ]; then
