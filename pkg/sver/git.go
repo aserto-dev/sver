@@ -8,6 +8,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+const gitBinary = "git"
+
 func git(args ...string) (string, error) {
 	cmd := exec.Command(gitBinary, args...)
 	out, err := cmd.CombinedOutput()

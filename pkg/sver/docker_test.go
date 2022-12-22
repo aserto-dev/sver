@@ -1,6 +1,8 @@
-package sver
+package sver_test
 
 import (
+	"github.com/aserto-dev/sver/pkg/sver"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -8,14 +10,14 @@ import (
 var _ = Describe("registry-versions", func() {
 	Context("public image", func() {
 		It("reading tags from the repo doesn't error", func() {
-			tags, err := ImageTags("ghcr.io/aserto-dev/sver", "", "")
+			tags, err := sver.ImageTags("ghcr.io/aserto-dev/sver", "", "")
 
 			Expect(err).ToNot(HaveOccurred())
 			Expect(tags).ToNot(HaveLen(0))
 		})
 
 		It("returns all version tags", func() {
-			tags, err := ImageTags("ghcr.io/aserto-dev/sver", "", "")
+			tags, err := sver.ImageTags("ghcr.io/aserto-dev/sver", "", "")
 
 			Expect(err).ToNot(HaveOccurred())
 			Expect(tags).ToNot(HaveLen(0))
@@ -28,7 +30,7 @@ var _ = Describe("registry-versions", func() {
 			version := "1.0.0-dev"
 			existingTags := []string{}
 
-			tags, err := CalculateTagsForVersion(version, existingTags)
+			tags, err := sver.CalculateTagsForVersion(version, existingTags)
 			Expect(err).ToNot(HaveOccurred())
 
 			Expect(tags).To(HaveLen(1))
@@ -42,7 +44,7 @@ var _ = Describe("registry-versions", func() {
 				version := "1.0.1"
 				existingTags := []string{}
 
-				tags, err := CalculateTagsForVersion(version, existingTags)
+				tags, err := sver.CalculateTagsForVersion(version, existingTags)
 				Expect(err).ToNot(HaveOccurred())
 
 				Expect(tags).To(HaveLen(4))
@@ -58,7 +60,7 @@ var _ = Describe("registry-versions", func() {
 				version := "1.3.1"
 				existingTags := []string{"0.9.0", "1.2.0", "1.0.0", "2.0.0"}
 
-				tags, err := CalculateTagsForVersion(version, existingTags)
+				tags, err := sver.CalculateTagsForVersion(version, existingTags)
 				Expect(err).ToNot(HaveOccurred())
 
 				Expect(tags).To(HaveLen(3))
@@ -72,7 +74,7 @@ var _ = Describe("registry-versions", func() {
 					version := "1.3.2"
 					existingTags := []string{"1.2.0", "1.4.0"}
 
-					tags, err := CalculateTagsForVersion(version, existingTags)
+					tags, err := sver.CalculateTagsForVersion(version, existingTags)
 					Expect(err).ToNot(HaveOccurred())
 
 					Expect(tags).To(HaveLen(2))
@@ -85,7 +87,7 @@ var _ = Describe("registry-versions", func() {
 						version := "0.3.1"
 						existingTags := []string{"1.2.0", "1.4.0"}
 
-						tags, err := CalculateTagsForVersion(version, existingTags)
+						tags, err := sver.CalculateTagsForVersion(version, existingTags)
 						Expect(err).ToNot(HaveOccurred())
 
 						Expect(tags).To(HaveLen(3))
@@ -101,7 +103,7 @@ var _ = Describe("registry-versions", func() {
 					version := "1.2.1"
 					existingTags := []string{"1.2.2", "1.4.0"}
 
-					tags, err := CalculateTagsForVersion(version, existingTags)
+					tags, err := sver.CalculateTagsForVersion(version, existingTags)
 					Expect(err).ToNot(HaveOccurred())
 
 					Expect(tags).To(HaveLen(1))
@@ -115,7 +117,7 @@ var _ = Describe("registry-versions", func() {
 				version := "2.1.1"
 				existingTags := []string{"2.1.0", "1.2.0", "2.0.0"}
 
-				tags, err := CalculateTagsForVersion(version, existingTags)
+				tags, err := sver.CalculateTagsForVersion(version, existingTags)
 				Expect(err).ToNot(HaveOccurred())
 
 				Expect(tags).To(HaveLen(4))

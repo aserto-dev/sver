@@ -43,7 +43,11 @@ linters-settings:
     settings:
       mnd:
         # don't include the "operation" and "assign"
-        checks: argument,case,condition,return
+        checks: 
+          - argument
+          - case
+          - condition
+          - return
   govet:
     check-shadowing: true
     settings:
@@ -58,7 +62,6 @@ linters-settings:
   misspell:
     locale: US
   nolintlint:
-    allow-leading-space: true # don't require machine-readable nolint directives (i.e. with no leading space)
     allow-unused: false # report any unused nolint directives
     require-explanation: false # don't require an explanation for nolint directives
     require-specific: false # don't require nolint directives to be specific about which linter is being skipped
@@ -68,8 +71,8 @@ linters:
   # inverted configuration with `enable-all` and `disable` is not scalable during updates of golangci-lint
   disable-all: true
   enable:
+    - asciicheck
     - bodyclose
-    - deadcode
     - depguard
     - dogsled
     - errcheck
@@ -80,6 +83,8 @@ linters:
     - goconst
     - gocritic
     - gocyclo
+    - godot
+    - goerr113
     - gofmt
     - goimports
     - goprintffuncname
@@ -89,37 +94,29 @@ linters:
     - ineffassign
     - misspell
     - nakedret
+    - noctx
     - rowserrcheck
     - staticcheck
-    - structcheck
     - stylecheck
+    - testpackage
     - typecheck
     - unconvert
     - unparam
     - unused
-    - varcheck
 
   # don't enable:
-  # - asciicheck
-  # - dupl
-  # - scopelint
-  # - gochecknoglobals
-  # - gocognit
-  # - godot
-  # - godox
-  # - goerr113
-  # - gomnd
-  # - interfacer
-  # - lll
-  # - maligned
-  # - nestif
-  # - noctx
-  # - nolintlint
-  # - prealloc
-  # - testpackage
-  # - revive
-  # - wsl
-  # - whitespace
+    # - dupl
+    # - gochecknoglobals
+    # - gocognit
+    # - godox
+    # - gomnd
+    # - lll
+    # - nestif
+    # - nolintlint # conflict with 1.19 gofmt changes
+    # - prealloc
+    # - revive
+    # - wsl
+    # - whitespace
 
 issues:
   # List of regexps of issue texts to exclude, empty list by default.
@@ -140,8 +137,24 @@ issues:
       - gocritic
     - text: "unnamedResult:"
       linters:
-      - gocritic      
+      - gocritic
+    - path: \.resolvers\.go
+      text: "typeDefFirst:"
+      linters:
+      - gocritic
+    - path: \.resolvers\.go
+      text: "paramTypeCombine:"
+      linters:
+      - gocritic
+    - path: \.resolvers\.go
+      text: "hugeParam:"
+      linters:
+      - gocritic
+    - text: "G404"
+      linters:
+      - gosec
 
 run:
+  timeout: 5m
   skip-dirs:
   - pkg/testharness/testdata
