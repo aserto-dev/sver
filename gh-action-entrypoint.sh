@@ -15,4 +15,4 @@ else
   version=$(/app/sver)
 fi
 
-echo "::set-output name=version::${version//$'\n'/'%0A'}"
+echo "version=${version//$'\n'/'%0A'}" >> $GITHUB_OUTPUT
