@@ -1,4 +1,4 @@
-package sver
+package sver_test
 
 import (
 	. "github.com/onsi/ginkgo"
