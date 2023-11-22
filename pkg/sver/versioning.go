@@ -21,14 +21,18 @@ var (
 	regexTail  = regexp.MustCompile(`^\d+\.\d+\.\d+(.*)`)
 )
 
-func CurrentVersion(releaseOnly, force bool) (string, error) {
+func CurrentVersion(releaseOnly, force bool, options ...string) (string, error) {
 	err := verifyGit()
 	if err != nil {
 		return "", errors.Wrap(err, "git error")
 	}
 
 	hasTag := true
-	tag, err := git("describe", "--tags", "--abbrev=0")
+	params := []string{"describe", "--tags", "--abbrev=0"}
+	if len(options) > 0 {
+		params = append(params, options...)
+	}
+	tag, err := git(params...)
 	if err != nil {
 		if !strings.Contains(err.Error(), "cannot describe anything") {
 			return "", errors.Wrap(err, "exec error")
