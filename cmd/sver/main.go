@@ -20,9 +20,10 @@ var (
 	flagReleaseOnly = false
 	flagPrefix      = false
 
-	flagTagsServerURL = ""
-	flagTagsUsername  = ""
-	flagTagsPassword  = ""
+	flagTagsServerURL      = ""
+	flagTagsUsername       = ""
+	flagTagsPassword       = ""
+	flagGitDescribeOptions = []string{}
 )
 
 var rootCmd = &cobra.Command{
@@ -32,7 +33,7 @@ var rootCmd = &cobra.Command{
 			return errors.New("Asked for a pre-release version, but the --release flag is on.")
 		}
 
-		version, err := sver.CurrentVersion(flagReleaseOnly, flagForce)
+		version, err := sver.CurrentVersion(flagReleaseOnly, flagForce, flagGitDescribeOptions...)
 		if err != nil {
 			return err
 		}
@@ -108,7 +109,7 @@ it's the latest one, it returns the appropriate tags to be pushed.`,
 			return errors.New("Asked for a pre-release version, but the --release flag is on.")
 		}
 
-		version, err := sver.CurrentVersion(flagReleaseOnly, flagForce)
+		version, err := sver.CurrentVersion(flagReleaseOnly, flagForce, flagGitDescribeOptions...)
 		if err != nil {
 			return err
 		}
@@ -159,6 +160,7 @@ func main() {
 	rootCmd.Flags().BoolVarP(&flagReleaseOnly, "release", "", false, "Fail if this is a dev, pre-release or dirty version.")
 	rootCmd.Flags().BoolVarP(&flagForce, "force", "f", false, "Ignore a dirty repository.")
 	rootCmd.Flags().BoolVarP(&flagPrefix, "prefix", "p", false, "Add the 'v' prefix to the output version.")
+	rootCmd.Flags().StringArrayVarP(&flagGitDescribeOptions, "git-describe-options", "g", []string{}, "Add extra options to git describe used to determine the correct version.(ex. --match='v*', --exclude='prefix/*')")
 
 	tagsCmd.Flags().StringVarP(&flagTagsServerURL, "server", "s", "https://registry-1.docker.io/", "Registry server to connect to.")
 	tagsCmd.Flags().StringVarP(&flagTagsUsername, "user", "u", "", "Username for the registry.")
