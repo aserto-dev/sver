@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> This repository is archived and no longer maintained.
+
 # sver
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/aserto-dev/sver.svg)](https://pkg.go.dev/github.com/aserto-dev/sver)
